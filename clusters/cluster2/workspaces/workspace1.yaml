@@ -1,0 +1,11 @@
+cluster_fqn: cluster2
+name: qa-test-ws
+environment_name: prod
+collaborators:
+  - role_id: workspace-admin
+    subject: user:bob@example.com
+  - role_id: workspace-viewer
+    subject: user:junaid@example.com
+  - role_id: workspace-editor
+    subject: user:hina@example.com
+type: workspace

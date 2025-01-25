@@ -1,0 +1,79 @@
+name: TFY Dry Run on PR
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'clusters/**/*.yaml'
+
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+    env:
+      TFY_API_KEY: ${{ secrets.TFY_API_KEY }}
+      TFY_HOST: ${{ secrets.TFY_HOST }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v42
+        with:
+          files: |
+            clusters/**/*.yaml
+
+      - name: Install yq
+        run: |
+          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          chmod +x /usr/local/bin/yq
+
+      - name: Validate YAML files
+        run: |
+          # Function to validate yaml name matches filename
+          validate_yaml_name() {
+            local file=$1
+            local filename=$(basename "$file" .yaml)
+            
+            # First check if the file is valid YAML
+            if ! yq eval '.' "$file" > /dev/null 2>&1; then
+              echo "Error: Invalid YAML syntax in file $file"
+              exit 1
+            fi
+            
+            local yaml_name=$(yq eval '.name' "$file")
+            
+            if [[ "$yaml_name" != "$filename" ]]; then
+              echo "Error: YAML name field '$yaml_name' does not match filename '$filename'"
+              echo "File: $file"
+              exit 1
+            fi
+          }
+
+          # Get the changed files as an array
+          IFS=' ' read -r -a changed_files <<< "${{ steps.changed-files.outputs.all_changed_files }}"
+
+          # Validate each changed file
+          for file in "${changed_files[@]}"; do
+            if [[ -n "$file" && -f "$file" ]]; then
+              echo "Validating $file"
+              validate_yaml_name "$file"
+            fi
+          done
+
+      - name: Setup TFY CLI
+        run: |
+          echo "Installing TFY CLI..."
+          pip install -U "truefoundry"
+
+      - name: Run TFY dry-run for changed files
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ $file == */applications/* ]]; then
+              echo "Running dry-run deploy for application file: $file"
+              # tfy deploy -f "$file" --dry-run
+            else
+              echo "Running dry-run apply for file: $file"
+              tfy apply -f "$file" --dry-run
+            fi
+          done

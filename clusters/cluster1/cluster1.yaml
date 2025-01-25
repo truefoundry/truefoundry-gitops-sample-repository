@@ -1,0 +1,27 @@
+name: cluster1
+cluster_type: gcp-gke-standard
+environment_names:
+  - dev
+  - prod
+  - staging
+collaborators:
+  - role_id: cluster-admin
+    subject: user:alice@example.com
+  - role_id: cluster-viewer
+    subject: user:bob@example.com
+  - role_id: cluster-member
+    subject: user:charlie@example.com
+  - role_id: cluster-admin
+    subject: user:dave@example.com
+type: cluster
+base_domains:
+  - '*.cluster1.dev.example.com'
+  - '*.internal.cluster1.dev.example.com'
+monitoring:
+  loki_url: http://loki.monitoring.svc.cluster.local:3100
+  prometheus_url: http://prometheus.monitoring.svc.cluster.local:9090
+default_registry_fqn: registry:example:docker-registry:dev-images
+workbench_config:
+  ssh_server_config:
+    base_domain: ssh.cluster1.dev.example.com
+    port: 80

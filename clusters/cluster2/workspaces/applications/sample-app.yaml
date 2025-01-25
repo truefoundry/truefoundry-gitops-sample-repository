@@ -1,0 +1,41 @@
+type: service
+workspace_fqn: cluster2:workspace1
+name: sample-app
+image:
+  type: build
+  build_source:
+    type: git
+    branch_name: main
+    ref: abc123def456gh789ijklmnop0123456789abcd
+    repo_url: https://github.com/example-org/sample-app
+  build_spec:
+    type: dockerfile
+    dockerfile_path: ./Dockerfile
+    build_context_path: ./
+ports:
+  - host: sample-app.example-domain.com
+    port: 8080
+    expose: true
+    protocol: TCP
+    app_protocol: http
+rollout_strategy:
+  type: rolling_update
+  max_surge_percentage: 0
+  max_unavailable_percentage: 25
+allow_interception: false
+replicas:
+  min_replicas: 1
+  max_replicas: 10
+  metrics:
+    type: cpu_utilization
+    value: 80
+resources:
+  node:
+    type: node_selector
+    capacity_type: spot_fallback_on_demand
+  cpu_request: 2
+  cpu_limit: 4
+  memory_request: 200
+  memory_limit: 500
+  ephemeral_storage_request: 1000
+  ephemeral_storage_limit: 2000

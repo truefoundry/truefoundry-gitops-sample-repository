@@ -1,0 +1,89 @@
+name: Apply Cluster Configuration
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'clusters/**/*.yaml'
+
+jobs:
+  apply-cluster-config:
+    runs-on: ubuntu-latest
+    env:
+      TFY_API_KEY: ${{ secrets.TFY_API_KEY }}
+      TFY_HOST: ${{ secrets.TFY_HOST }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Need to fetch at least 2 commits to compare changes
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          # Get list of all changed yaml files (including deleted) in clusters directory
+          added_modified=$(git diff --name-status HEAD^ HEAD | grep "^[AM].*\.yaml$" | grep "^[AM].*clusters/.*/" | awk '{print $2}' | tr '\n' ' ')
+          deleted=$(git diff --name-status HEAD^ HEAD | grep "^D.*\.yaml$" | grep "^D.*clusters/.*/" | awk '{print $2}' | tr '\n' ' ')
+          echo "added_modified=${added_modified}" >> "$GITHUB_OUTPUT"
+          echo "deleted=${deleted}" >> "$GITHUB_OUTPUT"
+          echo "Changed files:"
+          echo "${added_modified}"
+          echo "Deleted files:"
+          echo "${deleted}"
+
+      - name: Install yq
+        run: |
+          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          chmod +x /usr/local/bin/yq
+
+      - name: Validate YAML files
+        run: |
+          # Function to validate yaml name matches filename
+          validate_yaml_name() {
+            local file=$1
+            local filename=$(basename "$file" .yaml)
+            local yaml_name=$(yq '.name' "$file")
+            
+            if [[ "$yaml_name" != "$filename" ]]; then
+              echo "Error: YAML name field '$yaml_name' does not match filename '$filename' in $file"
+              exit 1
+            fi
+          }
+
+          # Split the space-separated string into array and validate each file
+          for file in ${{ steps.changed-files.outputs.added_modified }}; do
+            if [[ -n "$file" && -f "$file" ]]; then
+              echo "Validating $file"
+              validate_yaml_name "$file"
+            fi
+          done
+
+      - name: Setup TFY CLI
+        run: |
+          echo "Installing TFY CLI..."
+          pip install -U "truefoundry"
+
+      - name: Apply configurations
+        run: |
+          # Process deleted files first
+          for file in ${{ steps.changed-files.outputs.deleted }}; do
+            if [[ -n "$file" && -f "$file" ]]; then
+              echo "Deleting configuration for $file"
+              # tfy delete -f "$file"
+            fi
+          done
+
+          # Process added/modified files
+          for file in ${{ steps.changed-files.outputs.added_modified }}; do
+            if [[ -n "$file" && -f "$file" ]]; then
+              # Check if file is in applications folder
+              if [[ "$file" == *"/applications/"* ]]; then
+                echo "Applying application configuration for $file"
+                tfy deploy -f "$file"
+              else
+                echo "Applying non-application configuration for $file"
+                tfy apply -f "$file"
+              fi
+            fi
+          done

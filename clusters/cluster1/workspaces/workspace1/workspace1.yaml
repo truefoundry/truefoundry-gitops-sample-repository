@@ -1,0 +1,7 @@
+cluster_fqn: cluster1
+name: workspace1
+environment_name: devtest
+collaborators:
+  - role_id: workspace-admin
+    subject: user:alice@example.com
+type: workspace

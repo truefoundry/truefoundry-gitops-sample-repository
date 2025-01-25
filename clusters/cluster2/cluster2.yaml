@@ -1,0 +1,32 @@
+name: cluster2
+cluster_type: aws-eks
+environment_names:
+  - prod
+collaborators:
+  - role_id: cluster-admin
+    subject: user:alice@example.com
+  - role_id: cluster-admin
+    subject: user:bob@example.com
+  - role_id: cluster-viewer
+    subject: team:developers
+type: cluster
+base_domains:
+  - '*.example.com'
+  - '*.production.example.com'
+  - '*.cluster2-prod.production.example.com'
+  - '*.example.cloud'
+monitoring:
+  kubecost_url: http://kubecost-cost-analyzer.kubecost.svc.cluster.local:9090
+  loki_url: http://loki.loki.svc.cluster.local:3100
+  prometheus_url: >-
+    http://prometheus-kube-prometheus-prometheus.prometheus.svc.cluster.local:9090
+workbench_config:
+  notebook_config:
+    base_domain: nb.cluster2-prod.production.example.com
+  ssh_server_config:
+    base_domain: ssh.cluster2-prod.production.example.com
+    port: 80
+supported_nodepools:
+  - name: test-np
+  - name: test-np2
+default_registry_fqn: internal:registry:example-registry:docker-registry:internal-images
