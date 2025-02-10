@@ -1,0 +1,99 @@
+image: ubuntu:latest
+
+definitions:
+  steps:
+    - step: &validate-yaml
+        name: Validate YAML files
+        script:
+          # Install yq
+          - apt-get update && apt-get install -y wget
+          - wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          - chmod +x /usr/local/bin/yq
+          
+          # Get changed files
+          - |
+            changed_files=$(git diff --name-status $BITBUCKET_PR_DESTINATION_COMMIT $BITBUCKET_COMMIT | grep "^[AMD].*\.yaml$" | grep "^[AMD].*clusters/.*/" | awk '{print $2}')
+            
+            # Function to validate yaml name matches filename
+            validate_yaml_name() {
+              local file=$1
+              local filename=$(basename "$file" .yaml)
+              
+              # Check if file exists (not deleted)
+              if [ -f "$file" ]; then
+                # First check if the file is valid YAML
+                if ! yq eval '.' "$file" > /dev/null 2>&1; then
+                  echo "Error: Invalid YAML syntax in file $file"
+                  exit 1
+                fi
+                
+                local yaml_name=$(yq eval '.name' "$file")
+                
+                if [[ "$yaml_name" != "$filename" ]]; then
+                  echo "Error: YAML name field '$yaml_name' does not match filename '$filename'"
+                  echo "File: $file"
+                  exit 1
+                fi
+              fi
+            }
+
+            # Validate each changed file
+            for file in $changed_files; do
+              echo "Validating $file"
+              validate_yaml_name "$file"
+            done
+
+    - step: &setup-tfy
+        name: Setup TFY CLI
+        script:
+          - apt-get update && apt-get install -y python3-pip
+          - pip install -U "truefoundry"
+
+pipelines:
+  pull-requests:
+    '**':
+      - step: *validate-yaml
+      - step: 
+          <<: *setup-tfy
+          name: Dry Run TFY Changes
+          script:
+            - pip install -U "truefoundry"
+            - |
+              # Get changed files for clusters directory
+              changed_files=$(git diff --name-status $BITBUCKET_PR_DESTINATION_COMMIT $BITBUCKET_COMMIT | grep "^[AM].*\.yaml$" | grep "^[AM].*clusters/.*/" | awk '{print $2}')
+              
+              # Run dry-run for each changed file
+              for file in $changed_files; do
+                if [ -f "$file" ]; then
+                  echo "Running dry-run apply for file: $file"
+                  tfy apply -f "$file" --dry-run
+                fi
+              done
+
+  branches:
+    main:
+      - step: *validate-yaml
+      - step:
+          <<: *setup-tfy
+          name: Apply TFY Changes
+          script:
+            - pip install -U "truefoundry"
+            - |
+              # Get all changed files
+              added_modified=$(git diff --name-status HEAD^ HEAD | grep "^[AM].*\.yaml$" | grep "^[AM].*clusters/.*/" | awk '{print $2}')
+              deleted=$(git diff --name-status HEAD^ HEAD | grep "^D.*\.yaml$" | grep "^D.*clusters/.*/" | awk '{print $2}')
+              
+              # Process deleted files first
+              for file in $deleted; do
+                echo "Deleting configuration for $file"
+                # Uncomment the following line when ready to delete
+                # tfy delete -f "$file"
+              done
+              
+              # Process added/modified files
+              for file in $added_modified; do
+                if [ -f "$file" ]; then
+                  echo "Applying configuration for $file"
+                  tfy apply -f "$file"
+                fi
+              done

@@ -69,11 +69,6 @@ jobs:
       - name: Run TFY dry-run for changed files
         run: |
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            if [[ $file == */applications/* ]]; then
-              echo "Running dry-run deploy for application file: $file"
-              # tfy deploy -f "$file" --dry-run
-            else
-              echo "Running dry-run apply for file: $file"
-              tfy apply -f "$file" --dry-run
-            fi
+            echo "Running dry-run apply for file: $file"
+            tfy apply -f "$file" --dry-run
           done

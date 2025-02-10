@@ -77,13 +77,7 @@ jobs:
           # Process added/modified files
           for file in ${{ steps.changed-files.outputs.added_modified }}; do
             if [[ -n "$file" && -f "$file" ]]; then
-              # Check if file is in applications folder
-              if [[ "$file" == *"/applications/"* ]]; then
-                echo "Applying application configuration for $file"
-                tfy deploy -f "$file"
-              else
-                echo "Applying non-application configuration for $file"
-                tfy apply -f "$file"
-              fi
+              echo "Applying configuration for $file"
+              tfy apply -f "$file"
             fi
           done
