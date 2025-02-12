@@ -52,7 +52,6 @@ pipelines:
           script:
             - apt-get update && apt-get install -y python3-pip && apt-get install -y git
             - pip install -U "truefoundry"
-            - export TFY_HOST=""
             - |
               # Get changed files for clusters directory
               changed_files=$(git diff --name-status $BITBUCKET_PR_DESTINATION_COMMIT $BITBUCKET_COMMIT | grep "^[AM].*\.yaml$" | grep "^[AM].*clusters/.*/" | awk '{print $2}')
@@ -73,7 +72,6 @@ pipelines:
           script:
             - apt-get update && apt-get install -y python3-pip && apt-get install -y git
             - pip install -U "truefoundry"
-            - export TFY_HOST=""
             - |
               # Get all changed files
               added_modified=$(git diff --name-status HEAD^ HEAD | grep "^[AM].*\.yaml$" | grep "^[AM].*clusters/.*/" | awk '{print $2}')
