@@ -6,7 +6,7 @@ definitions:
         name: Validate YAML files
         script:
           # Install yq
-          - apt-get update && apt-get install -y wget
+          - apt-get update && apt-get install -y wget && apt-get install -y git
           - wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
           - chmod +x /usr/local/bin/yq
           
@@ -43,20 +43,14 @@ definitions:
               validate_yaml_name "$file"
             done
 
-    - step: &setup-tfy
-        name: Setup TFY CLI
-        script:
-          - apt-get update && apt-get install -y python3-pip
-          - pip install -U "truefoundry"
-
 pipelines:
   pull-requests:
     '**':
       - step: *validate-yaml
       - step: 
-          <<: *setup-tfy
           name: Dry Run TFY Changes
           script:
+            - apt-get update && apt-get install -y python3-pip && apt-get install -y git
             - pip install -U "truefoundry"
             - |
               # Get changed files for clusters directory
@@ -74,9 +68,9 @@ pipelines:
     main:
       - step: *validate-yaml
       - step:
-          <<: *setup-tfy
           name: Apply TFY Changes
           script:
+            - apt-get update && apt-get install -y python3-pip && apt-get install -y git
             - pip install -U "truefoundry"
             - |
               # Get all changed files
