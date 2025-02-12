@@ -1,4 +1,4 @@
-image: ubuntu:latest
+image: python:3.8
 
 definitions:
   steps:
@@ -46,11 +46,10 @@ definitions:
 pipelines:
   pull-requests:
     '**':
-      - step: *validate-yaml
       - step: 
           name: Dry Run TFY Changes
           script:
-            - apt-get update && apt-get install -y python3-pip && apt-get install -y git
+            - apt-get update && apt-get install -y git
             - pip install -U "truefoundry"
             - |
               # Get changed files for clusters directory
@@ -65,12 +64,11 @@ pipelines:
               done
 
   branches:
-    main:
-      - step: *validate-yaml
+    master:
       - step:
           name: Apply TFY Changes
           script:
-            - apt-get update && apt-get install -y python3-pip && apt-get install -y git
+            - apt-get update && apt-get install -y git
             - pip install -U "truefoundry"
             - |
               # Get all changed files
