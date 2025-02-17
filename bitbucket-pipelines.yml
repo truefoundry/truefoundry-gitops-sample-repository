@@ -1,4 +1,4 @@
-image: ubuntu:latest
+image: python:3.8
 
 definitions:
   steps:
@@ -6,7 +6,7 @@ definitions:
         name: Validate YAML files
         script:
           # Install yq
-          - apt-get update && apt-get install -y wget
+          - apt-get update && apt-get install -y wget && apt-get install -y git
           - wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
           - chmod +x /usr/local/bin/yq
           
@@ -43,27 +43,24 @@ definitions:
               validate_yaml_name "$file"
             done
 
-    - step: &setup-tfy
-        name: Setup TFY CLI
-        script:
-          - apt-get update && apt-get install -y python3-pip
-          - pip install -U "truefoundry"
-
 pipelines:
   pull-requests:
     '**':
       - step: *validate-yaml
       - step: 
-          <<: *setup-tfy
           name: Dry Run TFY Changes
           script:
+            - apt-get update && apt-get install -y python3-pip && apt-get install -y git
             - pip install -U "truefoundry"
             - |
               # Get changed files for clusters directory
               changed_files=$(git diff --name-status $BITBUCKET_PR_DESTINATION_COMMIT $BITBUCKET_COMMIT | grep "^[AM].*\.yaml$" | grep "^[AM].*clusters/.*/" | awk '{print $2}')
-              
+
+              # Sort files by nesting level (number of slashes)
+              sorted_files=$(echo "$changed_files" | awk -F'/' '{print NF, $0}' | sort -n | cut -d' ' -f2-)
+
               # Run dry-run for each changed file
-              for file in $changed_files; do
+              for file in $sorted_files; do
                 if [ -f "$file" ]; then
                   echo "Running dry-run apply for file: $file"
                   tfy apply -f "$file" --dry-run
@@ -74,24 +71,30 @@ pipelines:
     main:
       - step: *validate-yaml
       - step:
-          <<: *setup-tfy
           name: Apply TFY Changes
           script:
+            - apt-get update && apt-get install -y python3-pip && apt-get install -y git
             - pip install -U "truefoundry"
             - |
               # Get all changed files
               added_modified=$(git diff --name-status HEAD^ HEAD | grep "^[AM].*\.yaml$" | grep "^[AM].*clusters/.*/" | awk '{print $2}')
               deleted=$(git diff --name-status HEAD^ HEAD | grep "^D.*\.yaml$" | grep "^D.*clusters/.*/" | awk '{print $2}')
               
+              # Sort files by nesting level (number of slashes) in decreasing order
+              sorted_deleted_files=$(echo "$changes_files" | awk -F'/' '{print NF, $0}' | sort -rn | cut -d' ' -f2-)
+              
               # Process deleted files first
-              for file in $deleted; do
+              for file in $sorted_deleted_files; do
                 echo "Deleting configuration for $file"
                 # Uncomment the following line when ready to delete
                 # tfy delete -f "$file"
               done
+
+              # Sort files by nesting level (number of slashes)
+              sorted_added_modified_files=$(echo "$added_modified" | awk -F'/' '{print NF, $0}' | sort -n | cut -d' ' -f2-)
               
               # Process added/modified files
-              for file in $added_modified; do
+              for file in $sorted_added_modified_files; do
                 if [ -f "$file" ]; then
                   echo "Applying configuration for $file"
                   tfy apply -f "$file"
