@@ -1,5 +1,5 @@
 type: provider-account/custom
-name: custom-models
+name: custom
 integrations:
   - url: >-
       https://smollm-135m-instruct.example.com

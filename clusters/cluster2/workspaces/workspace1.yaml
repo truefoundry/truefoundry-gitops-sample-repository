@@ -1,5 +1,5 @@
 cluster_fqn: cluster2
-name: qa-test-ws
+name: workspace1
 environment_name: prod
 collaborators:
   - role_id: workspace-admin
