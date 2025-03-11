@@ -22,6 +22,9 @@ jobs:
         with:
           files: |
             clusters/**/*.yaml
+            teams/*.yaml
+            integrations/*.yaml
+            virtualaccounts/*.yaml
 
       - name: Install yq
         run: |
