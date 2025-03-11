@@ -1,0 +1,5 @@
+type: team
+name: frontend
+members:
+  - charlie@example.com
+  - dave@example.com

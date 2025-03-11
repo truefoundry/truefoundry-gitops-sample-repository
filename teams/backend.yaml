@@ -1,0 +1,5 @@
+type: team
+name: backend
+members:
+  - bob@example.com
+  - dave@example.com
