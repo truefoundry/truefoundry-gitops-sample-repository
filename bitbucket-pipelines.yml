@@ -12,7 +12,6 @@ definitions:
           
           # Get changed files
           - |
-            changed_files=$(git diff --name-status $BITBUCKET_PR_DESTINATION_COMMIT $BITBUCKET_COMMIT | grep "^[AMD].*\.yaml$" | grep "^[AMD].*clusters/.*/" | awk '{print $2}')
             
             # Function to validate yaml name matches filename
             validate_yaml_name() {
@@ -37,11 +36,23 @@ definitions:
               fi
             }
 
-            # Validate each changed file
-            for file in $changed_files; do
-              echo "Validating $file"
-              validate_yaml_name "$file"
-            done
+            validate_folder_changes() {
+              local folder_name=$1
+              
+              changed_files=$(git diff --name-status $BITBUCKET_PR_DESTINATION_COMMIT $BITBUCKET_COMMIT | grep "^[AMD].*\.yaml$" | grep "^[AMD].*${folder_name}/.*/" | awk '{print $2}')
+
+              # Validate each changed file
+              for file in $changed_files; do
+                echo "Validating $file"
+                validate_yaml_name "$file"
+              done
+            }
+
+            # Call function for all folders
+            validate_folder_changes "teams"
+            validate_folder_changes "integrations"
+            validate_folder_changes "clusters" 
+            validate_folder_changes "virtualaccounts"
 
 pipelines:
   pull-requests:
@@ -53,19 +64,29 @@ pipelines:
             - apt-get update && apt-get install -y python3-pip && apt-get install -y git
             - pip install -U "truefoundry"
             - |
-              # Get changed files for clusters directory
-              changed_files=$(git diff --name-status $BITBUCKET_PR_DESTINATION_COMMIT $BITBUCKET_COMMIT | grep "^[AM].*\.yaml$" | grep "^[AM].*clusters/.*/" | awk '{print $2}')
+              # Function to process dry-run changes in a folder
+              process_folder_dryrun() {
+                local folder_name=$1
+                
+                # Get changed files
+                changed_files=$(git diff --name-status $BITBUCKET_PR_DESTINATION_COMMIT $BITBUCKET_COMMIT | grep "^[AM].*\.yaml$" | grep "^[AM].*${folder_name}/.*/" | awk '{print $2}')
 
-              # Sort files by nesting level (number of slashes)
-              sorted_files=$(echo "$changed_files" | awk -F'/' '{print NF, $0}' | sort -n | cut -d' ' -f2-)
+                # Sort files by nesting level (number of slashes)
+                sorted_files=$(echo "$changed_files" | awk -F'/' '{print NF, $0}' | sort -n | cut -d' ' -f2-)
 
-              # Run dry-run for each changed file
-              for file in $sorted_files; do
-                if [ -f "$file" ]; then
-                  echo "Running dry-run apply for file: $file"
-                  tfy apply -f "$file" --dry-run
-                fi
-              done
+                # Process files
+                for file in $sorted_files; do
+                  if [ -f "$file" ]; then
+                    echo "Running dry-run apply for file: $file"
+                    tfy apply -f "$file" --dry-run
+                  fi
+                done
+              }
+
+              process_folder_dryrun "teams"
+              process_folder_dryrun "integrations" 
+              process_folder_dryrun "clusters"
+              process_folder_dryrun "virtualaccounts"
 
   branches:
     main:
@@ -76,27 +97,37 @@ pipelines:
             - apt-get update && apt-get install -y python3-pip && apt-get install -y git
             - pip install -U "truefoundry"
             - |
-              # Get all changed files
-              added_modified=$(git diff --name-status HEAD^ HEAD | grep "^[AM].*\.yaml$" | grep "^[AM].*clusters/.*/" | awk '{print $2}')
-              deleted=$(git diff --name-status HEAD^ HEAD | grep "^D.*\.yaml$" | grep "^D.*clusters/.*/" | awk '{print $2}')
-              
-              # Sort files by nesting level (number of slashes) in decreasing order
-              sorted_deleted_files=$(echo "$changes_files" | awk -F'/' '{print NF, $0}' | sort -rn | cut -d' ' -f2-)
-              
-              # Process deleted files first
-              for file in $sorted_deleted_files; do
-                echo "Deleting configuration for $file"
-                # Uncomment the following line when ready to delete
-                # tfy delete -f "$file"
-              done
+              # Function to process changes in a folder
+              process_folder_changes() {
+                local folder_name=$1
+                
+                # Get all changed files
+                added_modified=$(git diff --name-status HEAD^ HEAD | grep "^[AM].*\.yaml$" | grep "^[AM].*${folder_name}/.*/" | awk '{print $2}')
+                deleted=$(git diff --name-status HEAD^ HEAD | grep "^D.*\.yaml$" | grep "^D.*${folder_name}/.*/" | awk '{print $2}')
+                
+                # Sort files by nesting level (number of slashes) in decreasing order
+                sorted_deleted_files=$(echo "$deleted" | awk -F'/' '{print NF, $0}' | sort -rn | cut -d' ' -f2-)
+                
+                # Process deleted files first
+                for file in $sorted_deleted_files; do
+                  echo "Deleting configuration for $file"
+                  # Uncomment the following line when ready to delete
+                  # tfy delete -f "$file"
+                done
 
-              # Sort files by nesting level (number of slashes)
-              sorted_added_modified_files=$(echo "$added_modified" | awk -F'/' '{print NF, $0}' | sort -n | cut -d' ' -f2-)
-              
-              # Process added/modified files
-              for file in $sorted_added_modified_files; do
-                if [ -f "$file" ]; then
-                  echo "Applying configuration for $file"
-                  tfy apply -f "$file"
-                fi
-              done
+                # Sort files by nesting level (number of slashes)
+                sorted_added_modified_files=$(echo "$added_modified" | awk -F'/' '{print NF, $0}' | sort -n | cut -d' ' -f2-)
+                
+                # Process added/modified files
+                for file in $sorted_added_modified_files; do
+                  if [ -f "$file" ]; then
+                    echo "Applying configuration for $file"
+                    tfy apply -f "$file"
+                  fi
+                done
+              }
+
+              process_folder_changes "teams"
+              process_folder_changes "integrations"
+              process_folder_changes "clusters"
+              process_folder_changes "virtualaccounts"

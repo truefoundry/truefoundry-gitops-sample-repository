@@ -1,0 +1,14 @@
+type: provider-account/custom
+name: custom-models
+integrations:
+  - url: >-
+      https://smollm-135m-instruct.example.com
+    name: smollm-135m-instruct
+    type: integration/model/custom
+    model_types:
+      - chat
+      - completion
+    model_server: vllm-openai
+    hosted_model_name: huggingfacetb-smollm-135m-instruct
+    authorized_subjects:
+      - team:everyone

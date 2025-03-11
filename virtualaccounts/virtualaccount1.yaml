@@ -1,0 +1,15 @@
+type: virtual-account
+name: va1
+permissions:
+  - role_id: cluster-admin
+    resource_fqn: cluster1
+    resource_type: cluster
+  - role_id: provider-integration-access
+    resource_fqn: truefoundry:openai:openai-main:model:gpt-4
+    resource_type: provider-integration
+  - role_id: provider-integration-access
+    resource_fqn: truefoundry:openai:openai-main:model:gpt-4o-mini
+    resource_type: provider-integration
+  - role_id: provider-integration-access
+    resource_fqn: truefoundry:openai:openai-main:model:gpt-3-5-turbo
+    resource_type: provider-integration
