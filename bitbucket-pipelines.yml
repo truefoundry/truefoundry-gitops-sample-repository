@@ -111,8 +111,9 @@ pipelines:
                 # Process deleted files first
                 for file in $sorted_deleted_files; do
                   echo "Deleting configuration for $file"
-                  # Uncomment the following line when ready to delete
-                  # tfy delete -f "$file"
+                  git show HEAD^:"$file" > temp_delete.yaml
+                  tfy delete -f temp_delete.yaml
+                  rm temp_delete.yaml
                 done
 
                 # Sort files by nesting level (number of slashes)
