@@ -44,11 +44,11 @@ virtualaccounts/
 
 The repository contains the following top-level folders:
 
-- **clusters/** - Cluster configurations with nested workspaces and applications. We have a top level folder for each cluster. Inside the cluster folder, we have the cluster configuration file and a folder for workspaces. The workspaces folder contains the workspace configuration files and the applications folder which contains the application configuration files.
+- **clusters/** - Cluster configurations with nested workspaces and applications
 - **gateway/** - AI Gateway configurations including models, guardrails, and MCP servers
-- **integrations/** - Custom model integration configurations
-- **teams/** - Team definitions for role-based access control
-- **virtualaccounts/** - Virtual accounts with permissions for clusters and models
+- **integrations/** - Integration provider configuration
+- **teams/** - Team configuration
+- **virtualaccounts/** - Virtual account configuration
 
 ## File Naming Convention
 
