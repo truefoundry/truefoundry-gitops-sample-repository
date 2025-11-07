@@ -4,7 +4,10 @@ on:
   pull_request:
     types: [opened, synchronize]
     paths:
+      - 'teams/*.yaml'
+      - 'integrations/*.yaml'
       - 'clusters/**/*.yaml'
+      - 'virtualaccounts/*.yaml'
 
 jobs:
   dry-run:
@@ -21,9 +24,9 @@ jobs:
         uses: tj-actions/changed-files@v42
         with:
           files: |
-            clusters/**/*.yaml
             teams/*.yaml
             integrations/*.yaml
+            clusters/**/*.yaml
             virtualaccounts/*.yaml
 
       - name: Install yq
@@ -71,7 +74,30 @@ jobs:
 
       - name: Run TFY dry-run for changed files
         run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            echo "Running dry-run apply for file: $file"
-            tfy apply -f "$file" --dry-run
-          done
+          # Function to process dry-run changes in a folder
+          process_folder_dryrun() {
+            local folder_name=$1
+            local all_files="$2"
+            
+            # Filter files for this folder
+            changed_files=$(echo "$all_files" | tr ' ' '\n' | grep "^${folder_name}/" || true)
+
+            # Sort files by nesting level (number of slashes)
+            sorted_files=$(echo "$changed_files" | awk -F'/' '{print NF, $0}' | sort -n | cut -d' ' -f2-)
+
+            # Process files
+            for file in $sorted_files; do
+              if [ -n "$file" ] && [ -f "$file" ]; then
+                echo "Running dry-run apply for file: $file"
+                tfy apply -f "$file" --dry-run
+              fi
+            done
+          }
+
+          # Get all changed files
+          all_changed="${{ steps.changed-files.outputs.all_changed_files }}"
+
+          process_folder_dryrun "teams" "$all_changed"
+          process_folder_dryrun "integrations" "$all_changed"
+          process_folder_dryrun "clusters" "$all_changed"
+          process_folder_dryrun "virtualaccounts" "$all_changed"

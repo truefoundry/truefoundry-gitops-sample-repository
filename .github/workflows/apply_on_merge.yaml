@@ -5,7 +5,10 @@ on:
     branches:
       - main
     paths:
+      - 'teams/*.yaml'
+      - 'integrations/*.yaml'
       - 'clusters/**/*.yaml'
+      - 'virtualaccounts/*.yaml'
 
 jobs:
   apply-cluster-config:
@@ -21,16 +24,13 @@ jobs:
 
       - name: Get changed files
         id: changed-files
-        run: |
-          # Get list of all changed yaml files (including deleted) in clusters directory
-          added_modified=$(git diff --name-status HEAD^ HEAD | grep "^[AM].*\.yaml$" | grep "^[AM].*clusters/.*/" | awk '{print $2}' | tr '\n' ' ')
-          deleted=$(git diff --name-status HEAD^ HEAD | grep "^D.*\.yaml$" | grep "^D.*clusters/.*/" | awk '{print $2}' | tr '\n' ' ')
-          echo "added_modified=${added_modified}" >> "$GITHUB_OUTPUT"
-          echo "deleted=${deleted}" >> "$GITHUB_OUTPUT"
-          echo "Changed files:"
-          echo "${added_modified}"
-          echo "Deleted files:"
-          echo "${deleted}"
+        uses: tj-actions/changed-files@v42
+        with:
+          files: |
+            teams/*.yaml
+            integrations/*.yaml
+            clusters/**/*.yaml
+            virtualaccounts/*.yaml
 
       - name: Install yq
         run: |
@@ -66,18 +66,47 @@ jobs:
 
       - name: Apply configurations
         run: |
-          # Process deleted files first
-          for file in ${{ steps.changed-files.outputs.deleted }}; do
-            if [[ -n "$file" && -f "$file" ]]; then
-              echo "Deleting configuration for $file"
-              # tfy delete -f "$file"
-            fi
-          done
+          # Function to process changes in a folder
+          process_folder_changes() {
+            local folder_name=$1
+            local all_added_modified="$2"
+            local all_deleted="$3"
+            
+            # Filter deleted files for this folder
+            deleted=$(echo "$all_deleted" | tr ' ' '\n' | grep "^${folder_name}/" || true)
+            
+            # Sort deleted files by nesting level (number of slashes) in decreasing order
+            sorted_deleted_files=$(echo "$deleted" | awk -F'/' '{print NF, $0}' | sort -rn | cut -d' ' -f2-)
+            
+            # Process deleted files first
+            for file in $sorted_deleted_files; do
+              if [ -n "$file" ]; then
+                echo "Deleting configuration for $file"
+                # Uncomment the following line when ready to delete
+                # tfy delete -f "$file"
+              fi
+            done
 
-          # Process added/modified files
-          for file in ${{ steps.changed-files.outputs.added_modified }}; do
-            if [[ -n "$file" && -f "$file" ]]; then
-              echo "Applying configuration for $file"
-              tfy apply -f "$file"
-            fi
-          done
+            # Filter added/modified files for this folder
+            added_modified=$(echo "$all_added_modified" | tr ' ' '\n' | grep "^${folder_name}/" || true)
+            
+            # Sort files by nesting level (number of slashes)
+            sorted_added_modified_files=$(echo "$added_modified" | awk -F'/' '{print NF, $0}' | sort -n | cut -d' ' -f2-)
+            
+            # Process added/modified files
+            for file in $sorted_added_modified_files; do
+              if [ -n "$file" ] && [ -f "$file" ]; then
+                echo "Applying configuration for $file"
+                tfy apply -f "$file"
+              fi
+            done
+          }
+
+          # Get all changed and deleted files
+          all_changed="${{ steps.changed-files.outputs.all_changed_files }}"
+          all_deleted="${{ steps.changed-files.outputs.deleted_files }}"
+
+          process_folder_changes "teams" "$all_changed" "$all_deleted"
+          process_folder_changes "integrations" "$all_changed" "$all_deleted"
+          process_folder_changes "clusters" "$all_changed" "$all_deleted"
+          process_folder_changes "virtualaccounts" "$all_changed" "$all_deleted"
