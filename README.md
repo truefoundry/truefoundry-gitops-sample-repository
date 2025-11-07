@@ -22,23 +22,63 @@ clusters/
             ├── workspace1.yaml
             └── applications/
                 └── sample-app.yaml
+
+gateway/
+├── models/
+│   └── openai-model.yaml
+├── guardrails/
+│   └── openai-guardrail.yaml
+└── mcp-servers/
+    └── mcp1.yaml
+
+integrations/
+└── custom.yaml
+
+teams/
+├── backend.yaml
+└── frontend.yaml
+
+virtualaccounts/
+└── virtualaccount1.yaml
 ```
 
-We have a top level folder for each cluster. Inside the cluster folder, we have the cluster configuration file and a folder for workspaces. The workspaces folder contains the workspace configuration files and the applications folder which contains the application configuration files.
+The repository contains the following top-level folders:
+
+- **clusters/** - Cluster configurations with nested workspaces and applications
+- **gateway/** - AI Gateway configurations including models, guardrails, and MCP servers
+- **integrations/** - Integration provider configuration
+- **teams/** - Team configuration
+- **virtualaccounts/** - Virtual account configuration
 
 ## File Naming Convention
 
+### Clusters
 Each file in the clusters folder should follow the naming convention of `<cluster-name>.yaml`. The cluster name should be the same as the folder name.
 
 The workspaces folder should contain a folder for each workspace. The folder name should be the same as the workspace name. The workspace configuration file should follow the naming convention of `<workspace-name>.yaml`.
 
 The applications folder contains the spec of all the applications. Each application should be in a separate file and follow the naming convention of `<application-name>.yaml`.
 
+### Gateway
+The gateway folder contains three subfolders:
+- **models/** - Each model file should follow the naming convention of `<model-name>.yaml`
+- **guardrails/** - Each guardrail file should follow the naming convention of `<guardrail-name>.yaml`
+- **mcp-servers/** - Each MCP server file should follow the naming convention of `<mcp-server-name>.yaml`
+
+### Integrations
+Each integration file in the integrations folder should follow the naming convention of `<integration-name>.yaml`. The integration name in the file should match the filename.
+
+### Teams
+Each team file in the teams folder should follow the naming convention of `<team-name>.yaml`. The team name in the file should match the filename.
+
+### Virtual Accounts
+Each virtual account file in the virtualaccounts folder should follow the naming convention of `<virtualaccount-name>.yaml`. The virtual account name in the file should match the filename.
+
 ## Github actions
 
-We will use Github actions to validate the configuration files and also apply them on every push. To set up the actions, we will need to create a Github repository secret with the name `TFY_API_KEY` and the value of the API key which you can generate from the Truefoundry dashboard.  
-
-Before running the actions, please 
+We will use Github actions to validate the configuration files and also apply them on every push. To set up the actions, we will need to create the following Github repository secrets:
+- `TFY_HOST` - Your TrueFoundry host URL  
+- `TFY_API_KEY` - The API key which you can generate from the TrueFoundry dashboard
 
 There are primarily 2 Github actions in the .github/workflows folder:
 
