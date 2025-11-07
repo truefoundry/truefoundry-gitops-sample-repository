@@ -8,6 +8,7 @@ on:
       - 'integrations/*.yaml'
       - 'clusters/**/*.yaml'
       - 'virtualaccounts/*.yaml'
+      - 'gateway/**/*.yaml'
 
 jobs:
   dry-run:
@@ -28,7 +29,7 @@ jobs:
             integrations/*.yaml
             clusters/**/*.yaml
             virtualaccounts/*.yaml
-
+            gateway/**/*.yaml
       - name: Install yq
         run: |
           wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
@@ -101,3 +102,4 @@ jobs:
           process_folder_dryrun "integrations" "$all_changed"
           process_folder_dryrun "clusters" "$all_changed"
           process_folder_dryrun "virtualaccounts" "$all_changed"
+          process_folder_dryrun "gateway" "$all_changed"

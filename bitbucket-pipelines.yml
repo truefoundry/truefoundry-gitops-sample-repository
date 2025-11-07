@@ -53,6 +53,7 @@ definitions:
             validate_folder_changes "integrations"
             validate_folder_changes "clusters" 
             validate_folder_changes "virtualaccounts"
+            validate_folder_changes "gateway"
 
 pipelines:
   pull-requests:
@@ -87,7 +88,7 @@ pipelines:
               process_folder_dryrun "integrations" 
               process_folder_dryrun "clusters"
               process_folder_dryrun "virtualaccounts"
-
+              process_folder_dryrun "gateway"
   branches:
     main:
       - step: *validate-yaml
@@ -131,3 +132,4 @@ pipelines:
               process_folder_changes "integrations"
               process_folder_changes "clusters"
               process_folder_changes "virtualaccounts"
+              process_folder_changes "gateway"
