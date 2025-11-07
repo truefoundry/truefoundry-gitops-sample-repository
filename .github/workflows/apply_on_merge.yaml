@@ -9,6 +9,7 @@ on:
       - 'integrations/*.yaml'
       - 'clusters/**/*.yaml'
       - 'virtualaccounts/*.yaml'
+      - 'gateway/**/*.yaml'
 
 jobs:
   apply-cluster-config:
@@ -31,7 +32,7 @@ jobs:
             integrations/*.yaml
             clusters/**/*.yaml
             virtualaccounts/*.yaml
-
+            gateway/**/*.yaml
       - name: Install yq
         run: |
           wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
@@ -110,3 +111,4 @@ jobs:
           process_folder_changes "integrations" "$all_changed" "$all_deleted"
           process_folder_changes "clusters" "$all_changed" "$all_deleted"
           process_folder_changes "virtualaccounts" "$all_changed" "$all_deleted"
+          process_folder_changes "gateway" "$all_changed" "$all_deleted"
