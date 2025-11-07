@@ -1,4 +1,4 @@
-name: new-mcp-group
+name: mcp1
 type: provider-account/mcp-server-group
 collaborators:
   - role_id: provider-account-manager
@@ -12,10 +12,10 @@ integrations:
   - name: test-virtual-mcp
     type: integration/mcp-server/virtual
     servers:
-      - name: new-mcp-group/sentry
+      - name: mcp1/sentry
         enabled_tools:
           - whoami
-      - name: new-mcp-group/deepwiki
+      - name: mcp1/deepwiki
         enabled_tools:
           - read_wiki_structure
           - read_wiki_contents
