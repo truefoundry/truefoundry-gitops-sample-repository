@@ -78,7 +78,7 @@ Each virtual account file in the virtualaccounts folder should follow the naming
 
 We will use Github actions to validate the configuration files and also apply them on every push. To set up the actions, we will need to create the following Github repository secrets:
 - `TFY_HOST` - Your TrueFoundry host URL  
-- `TFY_API_KEY` - The API key which you can generate from the Truefoundry dashboard
+- `TFY_API_KEY` - The API key which you can generate from the TrueFoundry dashboard
 
 There are primarily 2 Github actions in the .github/workflows folder:
 
