@@ -1,0 +1,16 @@
+name: openai-model
+type: provider-account/openai
+collaborators:
+  - subject: team:everyone
+    role_id: provider-account-manager
+auth_data:
+  api_key: <API_KEY>
+  type: api-key
+integrations:
+  - type: integration/model/openai
+    name: gpt-5
+    model_id: gpt-5
+    model_types:
+      - chat
+    cost:
+      metric: public_cost

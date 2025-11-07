@@ -1,0 +1,22 @@
+name: new-mcp-group
+type: provider-account/mcp-server-group
+collaborators:
+  - role_id: provider-account-manager
+    subject: team:everyone
+integrations:
+  - url: https://docs.mcp.cloudflare.com/sse
+    name: cloudflare
+    type: integration/mcp-server/remote
+    transport: sse
+    description: Search Cloudflare documentation
+  - name: test-virtual-mcp
+    type: integration/mcp-server/virtual
+    servers:
+      - name: new-mcp-group/sentry
+        enabled_tools:
+          - whoami
+      - name: new-mcp-group/deepwiki
+        enabled_tools:
+          - read_wiki_structure
+          - read_wiki_contents
+    description: Test Virtual MCP Server
