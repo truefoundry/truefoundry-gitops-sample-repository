@@ -1,0 +1,9 @@
+name: ml-agent
+storage_integration_fqn: <storage_integration_fqn>
+collaborators:
+  - role_id: mlf-project-admin
+    subject: user:vik@gmail.com
+  - role_id: mlf-project-admin
+    subject: user:bob@gmail.com
+type: ml-repo
+

@@ -1,0 +1,31 @@
+name: data-access
+type: data-access-config
+rules:
+  - id: default-everyone-own-data
+    scope: own_data
+    enabled: true
+    filters: []
+    subjects:
+      - team:everyone
+    data_types:
+      - metrics
+    description: 'Default rule: Users can access their own data'
+  - id: default-everyone-team-data
+    scope: team_data
+    enabled: true
+    subjects:
+      - team:everyone
+    data_types:
+      - traces
+      - metrics
+    description: 'Default rule: Team members can access their team data'
+  - id: default-tenant-admin-all-data
+    scope: all_data
+    enabled: true
+    subjects:
+      - role:tenant-admin
+    data_types:
+      - traces
+      - metrics
+    description: 'Default rule: Tenant Admins can access all data'
+

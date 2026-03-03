@@ -1,0 +1,8 @@
+name: customer1
+identity_provider: custom-oidc
+claims:
+  - key: tenant
+    values:
+      - customer1
+type: external-identity
+

@@ -1,0 +1,23 @@
+name: rate-limiting-config
+type: gateway-rate-limiting-config
+rules:
+  - id: qa-team
+    unit: requests_per_hour
+    when:
+      models:
+        - anthropic/claude-3-5-sonnet-20240620
+      subjects:
+        - user:bob@gmail.com
+    limit_to: 10
+  - id: plat-team
+    unit: requests_per_day
+    when:
+      models:
+        - llm-gateway-gcp-vertex/gemini-2-0-flash-lite-001
+        - test-realtime-global/gemini-live-2.5-flash-native-audio
+      metadata:
+        key: value
+      subjects:
+        - user:vik@yahoo.com
+    limit_to: 1
+

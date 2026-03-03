@@ -1,0 +1,13 @@
+enabled: true
+name: custom-oidc
+type: external-identity-provider
+config:
+  jwks_uri: >-
+    <oidc_uri>
+  issuer: >-
+    <issuer_uri>
+  audience: test
+  type: jwt
+email_claim: email
+unique_id_claim: sub
+

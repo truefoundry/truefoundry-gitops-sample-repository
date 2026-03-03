@@ -1,0 +1,56 @@
+name: routing-config
+type: gateway-load-balancing-config
+rules:
+  - id: routeconfig
+    type: priority-based-routing
+    when:
+      models:
+        - gcpmodel/gpt-5-nano
+    load_balance_targets:
+      - target: gcpmodel/gpt-5-nano
+        priority: 2
+        sla_cutoff:
+          time_per_output_token_ms: 30000
+        timeout_ms: 30000
+        retry_config:
+          delay: 100
+          attempts: 2
+          on_status_codes:
+            - '429'
+            - '500'
+            - '504'
+        fallback_candidate: true
+        fallback_status_codes:
+          - '401'
+          - '403'
+          - '404'
+          - '429'
+          - '500'
+          - '502'
+          - '503'
+          - '408'
+          - '504'
+      - target: gcpmodel/gpt-4o-mini
+        priority: 2
+        override_params:
+          temperature: 231
+        fallback_candidate: true
+  - id: codex-cli
+    type: weight-based-routing
+    when:
+      models:
+        - gpt-5.2-codex
+    load_balance_targets:
+      - target: google-vertex/anthropic-claude-3-5-haiku
+        weight: 100
+        fallback_candidate: true
+- id: claude-sonnet
+    type: weight-based-routing
+    when:
+      subjects:
+        - user:bob@gmail.com
+    load_balance_targets:
+      - target: google-vertex/anthropic-claude-3-5-haiku
+        weight: 100
+        fallback_candidate: true
+
