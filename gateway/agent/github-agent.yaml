@@ -1,0 +1,10 @@
+name: github-agent
+description: github agent
+source:
+  type: prompt
+  prompt_version_fqn: <prompt_fqn>
+collaborators:
+  - subject: team:everyone
+    role_id: agent-access
+type: agent
+

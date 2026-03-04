@@ -1,0 +1,14 @@
+name: budget
+type: budget-config
+rules:
+  - id: simple-budget
+    unit: cost_per_day
+    when:
+      models:
+        - gcp/gpt-5-nano
+      subjects:
+        - user:bob@truefoundry.com
+    limit_to: 0.000001
+    budget_applies_per:
+      - model
+

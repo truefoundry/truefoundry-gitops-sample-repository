@@ -1,0 +1,8 @@
+name: devlopment
+isProduction: false
+optimizeFor: COST
+type: environment
+color:
+  colorHex: '#854d0e'
+  backgroundColorHex: '#fef9c3'
+

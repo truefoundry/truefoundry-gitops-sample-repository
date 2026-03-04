@@ -1,0 +1,8 @@
+name: production
+isProduction: true
+optimizeFor: AVAILABILITY
+type: environment
+color:
+  colorHex: '#4f46e5'
+  backgroundColorHex: '#e0e7ff'
+

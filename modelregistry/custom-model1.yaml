@@ -1,0 +1,24 @@
+name: custom-model1
+description: custom-model1
+metadata:
+  framework: PyTorch
+  model_type: text-generation
+  framework_version: 2.0.0
+version_alias: v1
+ml_repo: automation-ml-repo
+version: 1
+type: model-version
+source:
+  type: truefoundry
+  uri: >-
+    s3://<model_s3_uri>
+framework:
+  type: pytorch
+environment:
+  python_version: null
+  pip_packages:
+    - pandas
+    - numpy
+step: 0
+run_id: null
+

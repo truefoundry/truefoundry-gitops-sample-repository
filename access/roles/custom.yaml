@@ -1,0 +1,11 @@
+name: custom
+displayName: custom
+resourceType: account
+description: '-'
+permissions:
+  - account:ReadAccount
+  - cluster:ReadCluster
+  - cluster:DeleteCluster
+  - role:ListRoles
+type: role
+

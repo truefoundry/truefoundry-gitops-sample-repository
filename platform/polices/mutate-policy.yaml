@@ -1,0 +1,19 @@
+name: mutate-policy
+description: mutation policy
+operation:
+  type: mutate
+  order: 6
+mode: audit|disabled|enforce
+entities:
+  - service
+  - job
+  - ssh-server
+actions:
+  - apply
+code: |-
+  <code>
+type: policy
+filters:
+  workspace_names:
+    - <workspace_name>
+

@@ -1,0 +1,19 @@
+name: validate-policy
+description: validation policy
+operation:
+  type: validate
+mode: audit|disabled|enforce
+entities:
+  - service
+  - async-service
+  - job
+  - notebook
+  - ssh-server
+  - workflow
+  - helm
+actions:
+  - apply
+code: |-
+  <code>
+type: policy
+

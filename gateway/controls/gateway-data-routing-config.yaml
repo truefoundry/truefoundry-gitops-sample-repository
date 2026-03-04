@@ -1,0 +1,37 @@
+type: gateway-data-routing-config
+default:
+  storage:
+    type: controlplane-managed
+destinations:
+  - name: custom1
+    when:
+      - key: key1
+        field: metadata
+        value:
+          - val1
+        operator: IN
+      - key: key2
+        field: metadata
+        value:
+          - val2
+        operator: IN
+    enabled: false
+    storage:
+      type: controlplane-managed
+      region: australia
+    description: custom routing config for region specific
+  - name: custom2
+    when:
+      - key: key1
+        field: metadata
+        value:
+          - val1
+        operator: IN
+      - field: created_by
+        value:
+          - user:bob@gmail.com
+        operator: IN
+    enabled: true
+    storage:
+      type: controlplane-managed
+
