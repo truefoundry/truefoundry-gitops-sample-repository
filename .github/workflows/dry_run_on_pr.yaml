@@ -22,6 +22,5 @@ jobs:
       - name: TFY dry-run
         run: |
           set -euo pipefail
-          rm -rf .github/workflows
           BASE_REF="origin/${{ github.base_ref }}"
-          tfy apply -d . --dry-run --show-diff --diffs-only --ref "$BASE_REF"
+          tfy apply -d truefoundry --dry-run --show-diff --diffs-only --ref "$BASE_REF"
