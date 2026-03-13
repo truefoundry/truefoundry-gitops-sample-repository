@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup TFY CLI
-        run: pip install -U "truefoundry==0.14.0rc.1"
+        run: pip install -U "truefoundry"
 
       - name: TFY dry-run
         run: |
