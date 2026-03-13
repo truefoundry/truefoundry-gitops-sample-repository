@@ -1,4 +1,4 @@
-name: github-agent2
+name: github-agent
 description: github agent
 source:
   type: prompt
