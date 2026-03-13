@@ -4,16 +4,31 @@ on:
   push:
     branches:
       - main
+      - md_update_github_action_to_use_tfy_apply_on_directory
     paths:
-      - 'teams/*.yaml'
-      - 'integrations/*.yaml'
-      - 'clusters/**/*.yaml'
-      - 'virtualaccounts/*.yaml'
-      - 'gateway/**/*.yaml'
+      - "access/**"
+      - "clusters/**"
+      - "gateway/**"
+      - "modelregistry/**"
+      - "platform/**"
+      - "repositories/**"
+      - "teams/**"
+      - "integrations/**"
+      - "virtualaccounts/**"
 
 jobs:
   apply-cluster-config:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        manifest_root:
+          - access
+          - clusters
+          - gateway
+          - modelregistry
+          - platform
+          - repositories
     env:
       TFY_API_KEY: ${{ secrets.TFY_API_KEY }}
       TFY_HOST: ${{ secrets.TFY_HOST }}
@@ -21,94 +36,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2  # Need to fetch at least 2 commits to compare changes
-
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v42
-        with:
-          files: |
-            teams/*.yaml
-            integrations/*.yaml
-            clusters/**/*.yaml
-            virtualaccounts/*.yaml
-            gateway/**/*.yaml
-      - name: Install yq
-        run: |
-          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
-          chmod +x /usr/local/bin/yq
-
-      - name: Validate YAML files
-        run: |
-          # Function to validate yaml name matches filename
-          validate_yaml_name() {
-            local file=$1
-            local filename=$(basename "$file" .yaml)
-            local yaml_name=$(yq '.name' "$file")
-            
-            if [[ "$yaml_name" != "$filename" ]]; then
-              echo "Error: YAML name field '$yaml_name' does not match filename '$filename' in $file"
-              exit 1
-            fi
-          }
-
-          # Split the space-separated string into array and validate each file
-          for file in ${{ steps.changed-files.outputs.added_modified }}; do
-            if [[ -n "$file" && -f "$file" ]]; then
-              echo "Validating $file"
-              validate_yaml_name "$file"
-            fi
-          done
+          fetch-depth: 0
 
       - name: Setup TFY CLI
+        run: pip install -U "truefoundry"
+
+      - name: Apply (${{ matrix.manifest_root }})
         run: |
-          echo "Installing TFY CLI..."
-          pip install -U "truefoundry"
-
-      - name: Apply configurations
-        run: |
-          # Function to process changes in a folder
-          process_folder_changes() {
-            local folder_name=$1
-            local all_added_modified="$2"
-            local all_deleted="$3"
-            
-            # Filter deleted files for this folder
-            deleted=$(echo "$all_deleted" | tr ' ' '\n' | grep "^${folder_name}/" || true)
-            
-            # Sort deleted files by nesting level (number of slashes) in decreasing order
-            sorted_deleted_files=$(echo "$deleted" | awk -F'/' '{print NF, $0}' | sort -rn | cut -d' ' -f2-)
-            
-            # Process deleted files first
-            for file in $sorted_deleted_files; do
-              if [ -n "$file" ]; then
-                echo "Deleting configuration for $file"
-                # Uncomment the following line when ready to delete
-                # tfy delete -f "$file"
-              fi
-            done
-
-            # Filter added/modified files for this folder
-            added_modified=$(echo "$all_added_modified" | tr ' ' '\n' | grep "^${folder_name}/" || true)
-            
-            # Sort files by nesting level (number of slashes)
-            sorted_added_modified_files=$(echo "$added_modified" | awk -F'/' '{print NF, $0}' | sort -n | cut -d' ' -f2-)
-            
-            # Process added/modified files
-            for file in $sorted_added_modified_files; do
-              if [ -n "$file" ] && [ -f "$file" ]; then
-                echo "Applying configuration for $file"
-                tfy apply -f "$file"
-              fi
-            done
-          }
-
-          # Get all changed and deleted files
-          all_changed="${{ steps.changed-files.outputs.all_changed_files }}"
-          all_deleted="${{ steps.changed-files.outputs.deleted_files }}"
-
-          process_folder_changes "teams" "$all_changed" "$all_deleted"
-          process_folder_changes "integrations" "$all_changed" "$all_deleted"
-          process_folder_changes "clusters" "$all_changed" "$all_deleted"
-          process_folder_changes "virtualaccounts" "$all_changed" "$all_deleted"
-          process_folder_changes "gateway" "$all_changed" "$all_deleted"
+          set -euo pipefail
+          ROOT="${{ matrix.manifest_root }}"
+          if [[ ! -d "$ROOT" ]]; then
+            echo "Skip: no directory $ROOT"
+            exit 0
+          fi
+          BEFORE="${{ github.event.before }}"
+          # pre-SHA will be 0000000000000000000000000000000000000000 for first push to main
+          ZERO="0000000000000000000000000000000000000000"
+          if [[ "$BEFORE" == "$ZERO" ]]; then
+            REF="HEAD~1"
+            echo "Fallback ref: HEAD~1"
+          else
+            REF="$BEFORE"
+          fi
+          echo "Apply: $ROOT (vs $REF)"
+          tfy apply -d "$ROOT" --diffs-only --ref "$REF"
