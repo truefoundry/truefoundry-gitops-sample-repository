@@ -3,11 +3,6 @@ name: TFY Dry Run on PR
 on:
   pull_request:
     types: [opened, synchronize]
-    paths:
-      - "**/*.yaml"
-      - "**/*.yml"
-    paths-ignore:
-      - ".github/workflows/**"
 
 jobs:
   dry-run:

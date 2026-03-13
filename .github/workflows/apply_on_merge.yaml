@@ -5,11 +5,6 @@ on:
     branches:
       - main
       - md_update_github_action_to_use_tfy_apply_on_directory
-    paths:
-      - "**/*.yaml"
-      - "**/*.yml"
-    paths-ignore:
-      - ".github/workflows/**"
 
 jobs:
   apply-cluster-config:
