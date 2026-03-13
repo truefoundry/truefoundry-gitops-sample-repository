@@ -3,12 +3,6 @@ name: TFY Dry Run on PR
 on:
   pull_request:
     types: [opened, synchronize]
-    paths:
-      - 'teams/*.yaml'
-      - 'integrations/*.yaml'
-      - 'clusters/**/*.yaml'
-      - 'virtualaccounts/*.yaml'
-      - 'gateway/**/*.yaml'
 
 jobs:
   dry-run:
@@ -19,87 +13,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v42
         with:
-          files: |
-            teams/*.yaml
-            integrations/*.yaml
-            clusters/**/*.yaml
-            virtualaccounts/*.yaml
-            gateway/**/*.yaml
-      - name: Install yq
-        run: |
-          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
-          chmod +x /usr/local/bin/yq
-
-      - name: Validate YAML files
-        run: |
-          # Function to validate yaml name matches filename
-          validate_yaml_name() {
-            local file=$1
-            local filename=$(basename "$file" .yaml)
-            
-            # First check if the file is valid YAML
-            if ! yq eval '.' "$file" > /dev/null 2>&1; then
-              echo "Error: Invalid YAML syntax in file $file"
-              exit 1
-            fi
-            
-            local yaml_name=$(yq eval '.name' "$file")
-            
-            if [[ "$yaml_name" != "$filename" ]]; then
-              echo "Error: YAML name field '$yaml_name' does not match filename '$filename'"
-              echo "File: $file"
-              exit 1
-            fi
-          }
-
-          # Get the changed files as an array
-          IFS=' ' read -r -a changed_files <<< "${{ steps.changed-files.outputs.all_changed_files }}"
-
-          # Validate each changed file
-          for file in "${changed_files[@]}"; do
-            if [[ -n "$file" && -f "$file" ]]; then
-              echo "Validating $file"
-              validate_yaml_name "$file"
-            fi
-          done
+          fetch-depth: 0
 
       - name: Setup TFY CLI
+        run: pip install -U "truefoundry"
+
+      - name: TFY dry-run
         run: |
-          echo "Installing TFY CLI..."
-          pip install -U "truefoundry"
-
-      - name: Run TFY dry-run for changed files
-        run: |
-          # Function to process dry-run changes in a folder
-          process_folder_dryrun() {
-            local folder_name=$1
-            local all_files="$2"
-            
-            # Filter files for this folder
-            changed_files=$(echo "$all_files" | tr ' ' '\n' | grep "^${folder_name}/" || true)
-
-            # Sort files by nesting level (number of slashes)
-            sorted_files=$(echo "$changed_files" | awk -F'/' '{print NF, $0}' | sort -n | cut -d' ' -f2-)
-
-            # Process files
-            for file in $sorted_files; do
-              if [ -n "$file" ] && [ -f "$file" ]; then
-                echo "Running dry-run apply for file: $file"
-                tfy apply -f "$file" --dry-run --show-diff
-              fi
-            done
-          }
-
-          # Get all changed files
-          all_changed="${{ steps.changed-files.outputs.all_changed_files }}"
-
-          process_folder_dryrun "teams" "$all_changed"
-          process_folder_dryrun "integrations" "$all_changed"
-          process_folder_dryrun "clusters" "$all_changed"
-          process_folder_dryrun "virtualaccounts" "$all_changed"
-          process_folder_dryrun "gateway" "$all_changed"
+          set -euo pipefail
+          BASE_REF="origin/${{ github.base_ref }}"
+          tfy apply -d truefoundry --dry-run --show-diff --diffs-only --ref "$BASE_REF"
