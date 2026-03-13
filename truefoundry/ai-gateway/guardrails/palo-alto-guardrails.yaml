@@ -1,0 +1,20 @@
+name: palo-alto-guardrail
+type: provider-account/guardrail-config-group
+collaborators:
+  - role_id: provider-account-manager
+    subject: user:<USER_EMAIL>
+  - role_id: provider-account-access
+    subject: team:everyone
+integrations:
+  - name: palo-alto
+    type: integration/guardrail-config/palo-alto-prisma-airs
+    config:
+      mode: sync
+      base_url: https://service-sg.api.aisecurity.paloaltonetworks.com/v1/
+      profile_name: TF-Test-DG
+    auth_data:
+      type: api-key
+      api_key: tfy-secret://truefoundry:prisma:PRISMA_AIRS_KEY_3
+    operation: validate
+    description: Palo Alto Prisma AIRS for AI security and content validation
+    enforcing_strategy: enforce_but_ignore_on_error

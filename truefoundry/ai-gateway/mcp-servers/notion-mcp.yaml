@@ -1,0 +1,16 @@
+url: https://mcp.notion.com/mcp
+name: notion-mcp
+type: mcp-server/remote
+auth_data:
+  type: oauth2
+  scopes: []
+  token_url: https://mcp.notion.com/token
+  jwt_source: access_token
+  registration_url: https://mcp.notion.com/register
+  authorization_url: https://mcp.notion.com/authorize
+  code_challenge_methods_supported:
+    - S256
+description: Notion is a collaboration and productivity tool.
+collaborators:
+  - role_id: mcp-server-manager
+    subject: user:<USER_EMAIL>

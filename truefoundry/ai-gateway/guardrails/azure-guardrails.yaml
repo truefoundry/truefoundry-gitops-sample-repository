@@ -1,0 +1,25 @@
+name: azure-guardrail
+type: provider-account/guardrail-config-group
+collaborators:
+  - role_id: provider-account-manager
+    subject: user:<USER_EMAIL>
+  - role_id: provider-account-access
+    subject: team:everyone
+integrations:
+  - name: azure-guardrail
+    type: integration/guardrail-config/azure-pii
+    config:
+      domain: phi
+      language: en
+      api_version: "2024-11-01"
+      model_version: latest
+      resource_name: <RESOURCE_NAME>
+      pii_categories:
+        - "*"
+    priority: 1
+    auth_data:
+      type: api-key
+      api_key: <API_KEY>
+    operation: mutate
+    description: Azure AI Language PII detection and redaction for sensitive data
+    enforcing_strategy: enforce

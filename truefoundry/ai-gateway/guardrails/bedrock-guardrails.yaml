@@ -1,0 +1,20 @@
+name: bedrock-guardrail
+type: provider-account/guardrail-config-group
+collaborators:
+  - role_id: provider-account-manager
+    subject: user:<USER_EMAIL>
+  - role_id: provider-account-access
+    subject: team:everyone
+integrations:
+  - name: bedrock
+    type: integration/guardrail-config/aws-bedrock
+    config:
+      region: us-east-1
+      guardrail_id: <GUARDRAIL_ID>
+      guardrail_version: "1"
+    auth_data:
+      type: api-key
+      api_key: <API_KEY>
+    operation: validate
+    description: AWS Bedrock Guardrails for content filtering and safety policies
+    enforcing_strategy: enforce_but_ignore_on_error

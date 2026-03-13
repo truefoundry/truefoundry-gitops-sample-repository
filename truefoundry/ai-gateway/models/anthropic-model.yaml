@@ -1,0 +1,25 @@
+type: provider-account/anthropic
+name: anthropic-model
+collaborators:
+  - role_id: provider-account-manager
+    subject: user:<USER_EMAIL>
+  - role_id: provider-account-access
+    subject: team:everyone
+auth_data:
+  api_key: <API_KEY>
+  type: api-key
+integrations:
+  - cost:
+      metric: public_cost
+    name: claude-opus-4-1
+    type: integration/model/anthropic
+    model_id: claude-opus-4-1
+    model_types:
+      - chat
+  - cost:
+      metric: public_cost
+    name: claude-4-opus-20250514
+    type: integration/model/anthropic
+    model_id: claude-4-opus-20250514
+    model_types:
+      - chat
