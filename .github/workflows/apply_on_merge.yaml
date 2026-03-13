@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - md_update_github_action_to_use_tfy_apply_on_directory
 
 jobs:
   apply-cluster-config:
