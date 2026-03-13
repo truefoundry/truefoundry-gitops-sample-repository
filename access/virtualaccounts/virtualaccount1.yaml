@@ -1,5 +1,5 @@
 type: virtual-account
-name: virtualaccount123
+name: virtualaccount1234
 permissions:
   - role_id: cluster-admin
     resource_fqn: cluster1

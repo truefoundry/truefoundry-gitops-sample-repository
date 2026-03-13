@@ -6,29 +6,14 @@ on:
       - main
       - md_update_github_action_to_use_tfy_apply_on_directory
     paths:
-      - "access/**"
-      - "clusters/**"
-      - "gateway/**"
-      - "modelregistry/**"
-      - "platform/**"
-      - "repositories/**"
-      - "teams/**"
-      - "integrations/**"
-      - "virtualaccounts/**"
+      - "**/*.yaml"
+      - "**/*.yml"
+    paths-ignore:
+      - ".github/workflows/**"
 
 jobs:
   apply-cluster-config:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        manifest_root:
-          - access
-          - clusters
-          - gateway
-          - modelregistry
-          - platform
-          - repositories
     env:
       TFY_API_KEY: ${{ secrets.TFY_API_KEY }}
       TFY_HOST: ${{ secrets.TFY_HOST }}
@@ -41,22 +26,8 @@ jobs:
       - name: Setup TFY CLI
         run: pip install -U "truefoundry==0.14.0rc.1"
 
-      - name: Apply (${{ matrix.manifest_root }})
+      - name: Apply changed manifests
         run: |
           set -euo pipefail
-          ROOT="${{ matrix.manifest_root }}"
-          if [[ ! -d "$ROOT" ]]; then
-            echo "Skip: no directory $ROOT"
-            exit 0
-          fi
-          BEFORE="${{ github.event.before }}"
-          # pre-SHA will be 0000000000000000000000000000000000000000 for first push to main
-          ZERO="0000000000000000000000000000000000000000"
-          if [[ "$BEFORE" == "$ZERO" ]]; then
-            REF="HEAD~1"
-            echo "Fallback ref: HEAD~1"
-          else
-            REF="$BEFORE"
-          fi
-          echo "Apply: $ROOT (vs $REF)"
-          tfy apply -d "$ROOT" --diffs-only --ref "$REF"
+          rm -rf .github/workflows
+          tfy apply -d . --diffs-only --ref "${{ github.event.before }}"

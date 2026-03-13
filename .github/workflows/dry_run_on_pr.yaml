@@ -4,32 +4,14 @@ on:
   pull_request:
     types: [opened, synchronize]
     paths:
-      - "access/**"
-      - "clusters/**"
-      - "gateway/**"
-      - "modelregistry/**"
-      - "platform/**"
-      - "repositories/**"
-      - "teams/**"
-      - "integrations/**"
-      - "virtualaccounts/**"
+      - "**/*.yaml"
+      - "**/*.yml"
+    paths-ignore:
+      - ".github/workflows/**"
 
 jobs:
   dry-run:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        manifest_root:
-          - access
-          - clusters
-          - gateway
-          - modelregistry
-          - platform
-          - repositories
-          - teams
-          - integrations
-          - virtualaccounts
     env:
       TFY_API_KEY: ${{ secrets.TFY_API_KEY }}
       TFY_HOST: ${{ secrets.TFY_HOST }}
@@ -42,14 +24,9 @@ jobs:
       - name: Setup TFY CLI
         run: pip install -U "truefoundry==0.14.0rc.1"
 
-      - name: TFY dry-run (${{ matrix.manifest_root }})
+      - name: TFY dry-run
         run: |
           set -euo pipefail
-          ROOT="${{ matrix.manifest_root }}"
-          if [[ ! -d "$ROOT" ]]; then
-            echo "Skip: no directory $ROOT"
-            exit 0
-          fi
+          rm -rf .github/workflows
           BASE_REF="origin/${{ github.base_ref }}"
-          echo "Dry-run: $ROOT (vs $BASE_REF)"
-          tfy apply -d "$ROOT" --dry-run --show-diff --diffs-only --ref "$BASE_REF"
+          tfy apply -d . --dry-run --show-diff --diffs-only --ref "$BASE_REF"
