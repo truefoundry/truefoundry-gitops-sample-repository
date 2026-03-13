@@ -1,0 +1,25 @@
+type: provider-account/google-gemini
+name: gemini-model
+collaborators:
+  - role_id: provider-account-manager
+    subject: user:<USER_EMAIL>
+  - role_id: provider-account-access
+    subject: team:everyone
+auth_data:
+  apiKey: <API_KEY>
+  type: api-key
+integrations:
+  - cost:
+      metric: public_cost
+    name: gemini-3-flash-preview
+    type: integration/model/gemini
+    model_id: gemini-3-flash-preview
+    model_types:
+      - chat
+  - cost:
+      metric: public_cost
+    name: gemma-3-27b-it
+    type: integration/model/gemini
+    model_id: gemma-3-27b-it
+    model_types:
+      - chat

@@ -1,0 +1,37 @@
+type: provider-account/aws-bedrock
+name: aws-bedrock-model
+collaborators:
+  - role_id: provider-account-manager
+    subject: user:<USER_EMAIL>
+  - role_id: provider-account-access
+    subject: team:everyone
+region: us-east-1
+auth_data:
+  type: access-key-based
+  access_key_id: <AWS_ACCESS_KEY_ID>
+  secret_access_key: <AWS_SECRET_ACCESS_KEY>
+integrations:
+  - cost:
+      metric: public_cost
+    name: us-anthropic-claude-opus-4-1-20250805-v1-0
+    type: integration/model/bedrock
+    region: us-east-1
+    model_id: us.anthropic.claude-opus-4-1-20250805-v1:0
+    model_types:
+      - chat
+  - cost:
+      metric: public_cost
+    name: us-anthropic-claude-sonnet-4-20250514-v1-0
+    type: integration/model/bedrock
+    region: us-east-1
+    model_id: us.anthropic.claude-sonnet-4-20250514-v1:0
+    model_types:
+      - chat
+  - cost:
+      metric: public_cost
+    name: us-meta-llama3-2-1b-instruct-v1-0
+    type: integration/model/bedrock
+    region: us-east-1
+    model_id: us.meta.llama3-2-1b-instruct-v1:0
+    model_types:
+      - chat

@@ -1,0 +1,11 @@
+url: https://mcp.figma.com/mcp
+name: figma-mcp
+type: mcp-server/remote
+auth_data:
+  type: header
+  headers:
+    Authorization: Bearer <API_KEY>
+description: figma
+collaborators:
+  - role_id: mcp-server-manager
+    subject: user:<USER_EMAIL>

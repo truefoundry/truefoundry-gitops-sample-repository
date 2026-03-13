@@ -1,0 +1,29 @@
+type: job
+name: <JOB_NAME>
+image:
+  type: image
+  image_uri: public.ecr.aws/truefoundrycloud/train-iris-job:0.1.1
+  command: python train.py
+trigger:
+  type: manual
+resources:
+  node:
+    type: node_selector
+    capacity_type: spot_fallback_on_demand
+  cpu_request: 0.5
+  cpu_limit: 0.5
+  memory_request: 1000
+  memory_limit: 1000
+  ephemeral_storage_request: 500
+  ephemeral_storage_limit: 500
+workspace_fqn: <WORKSPACE_FQN>
+alerts:
+  - on_start: false
+    on_failure: true
+    on_completion: false
+    notification_target:
+      type: email
+      notification_channel: <NOTIFICATION_CHANNEL_FQN>
+      to_emails:
+        - <EMAIL>
+retries: 0

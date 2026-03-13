@@ -1,0 +1,31 @@
+type: service
+name: <SERVICE_NAME>
+image:
+  type: image
+  image_uri: <IMAGE_URI>
+  command: uvicorn app:app --host 0.0.0.0 --port 8000
+ports:
+  - port: 8000
+    expose: true
+    protocol: TCP
+    app_protocol: http
+    host: <HOST>
+workspace_fqn: <WORKSPACE_FQN>
+replicas: 2
+labels:
+  tfy_openapi_path: openapi.json
+allow_interception: false
+rollout_strategy:
+  type: blue_green
+  enable_auto_promotion: true
+  auto_promotion_seconds: 30
+resources:
+  node:
+    type: node_selector
+    capacity_type: spot_fallback_on_demand
+  cpu_request: 0.5
+  cpu_limit: 0.5
+  memory_request: 1000
+  memory_limit: 1000
+  ephemeral_storage_request: 500
+  ephemeral_storage_limit: 500

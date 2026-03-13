@@ -1,0 +1,15 @@
+url: https://api.githubcopilot.com/mcp/
+name: github-mcp
+type: mcp-server/remote
+auth_data:
+  type: oauth2
+  scopes: []
+  token_url: https://github.com/login/oauth/access_token
+  jwt_source: access_token
+  authorization_url: https://github.com/login/oauth/authorize
+  code_challenge_methods_supported:
+    - S256
+description: GitHub's official MCP Server
+collaborators:
+  - role_id: mcp-server-manager
+    subject: user:<USER_EMAIL>
