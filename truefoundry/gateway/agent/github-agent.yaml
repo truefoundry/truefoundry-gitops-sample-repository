@@ -1,4 +1,4 @@
-name: github-agent
+name: github-agent1
 description: github agent
 source:
   type: prompt
@@ -7,4 +7,3 @@ collaborators:
   - subject: team:everyone
     role_id: agent-access
 type: agent
-
