@@ -1,0 +1,28 @@
+type: service
+name: <SERVICE_NAME>
+image:
+  type: image
+  image_uri: <IMAGE_URI>
+  command: uvicorn app:app --host 0.0.0.0 --port 8000
+ports:
+  - port: 8000
+    expose: true
+    protocol: TCP
+    app_protocol: http
+    host: <HOST>
+workspace_fqn: <WORKSPACE_FQN>
+replicas: 2
+resources:
+  node:
+    type: node_selector
+    capacity_type: spot_fallback_on_demand
+  devices:
+    - type: nvidia_gpu
+      count: 1
+      name: A100_80GB
+  cpu_request: 10
+  cpu_limit: 12
+  memory_request: 122400
+  memory_limit: 144000
+  ephemeral_storage_request: 20000
+  ephemeral_storage_limit: 100000
