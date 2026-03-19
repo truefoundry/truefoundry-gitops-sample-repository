@@ -23,4 +23,4 @@ jobs:
       - name: Apply changed manifests
         run: |
           set -euo pipefail
-          tfy apply -d truefoundry --diffs-only --ref "${{ github.event.before }}"
+          tfy apply --dir truefoundry --diffs-only --ref "${{ github.event.before }}"

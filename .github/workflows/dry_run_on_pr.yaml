@@ -23,4 +23,4 @@ jobs:
         run: |
           set -euo pipefail
           BASE_REF="origin/${{ github.base_ref }}"
-          tfy apply -d truefoundry --dry-run --show-diff --diffs-only --ref "$BASE_REF"
+          tfy apply --dir truefoundry --dry-run --show-diff --diffs-only --ref "$BASE_REF"
