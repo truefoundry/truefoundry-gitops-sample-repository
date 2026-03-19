@@ -1,0 +1,36 @@
+type: job
+name: <JOB_NAME>
+image:
+  type: build
+  build_source:
+    type: git
+    branch_name: main
+    ref: 72dc910e8f98bc9e24d363b261c5882733eb96f7
+    repo_url: https://github.com/truefoundry/train-iris-job
+  build_spec:
+    type: dockerfile
+    build_context_path: ./
+    command: python train.py
+    python_dependencies: {}
+    dockerfile_path: ./Dockerfile
+trigger:
+  type: scheduled
+  schedule: 0 0 * * *
+  timezone: UTC
+  concurrency_policy: Forbid
+workspace_fqn: <WORKSPACE_FQN>
+retries: 0
+resources:
+  node:
+    type: node_selector
+    capacity_type: spot_fallback_on_demand
+  devices:
+    - type: nvidia_gpu
+      count: 1
+      name: A100_40GB
+  cpu_request: 10
+  cpu_limit: 12
+  memory_request: 122400
+  memory_limit: 144000
+  ephemeral_storage_request: 20000
+  ephemeral_storage_limit: 100000

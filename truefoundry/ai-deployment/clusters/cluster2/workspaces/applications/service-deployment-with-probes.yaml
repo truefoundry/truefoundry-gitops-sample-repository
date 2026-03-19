@@ -8,13 +8,11 @@ image:
     ref: c4f7fce4d2e3fdec4ff3a6c7defec2293c763b48
     repo_url: https://github.com/truefoundry/emotion-classification-fastapi
   build_spec:
-    type: tfy-python-buildpack
+    type: dockerfile
     build_context_path: ./
     command: uvicorn app:app --host 0.0.0.0 --port 8000
-    python_dependencies:
-      type: pip
-      requirements_path: requirements.txt
-    python_version: "3.10"
+    python_dependencies: {}
+    dockerfile_path: ./Dockerfile
 ports:
   - port: 8000
     expose: true
@@ -23,13 +21,19 @@ ports:
     host: <HOST>
 workspace_fqn: <WORKSPACE_FQN>
 replicas: 1
-labels:
-  tfy_openapi_path: openapi.json
-allow_interception: false
-env:
-  TEST_ENV: value
-  TEST_ENV2: value2
+# Liveness probe is used to check if the service is running
 liveness_probe:
+  config:
+    type: http
+    path: /health
+    port: 8000
+  failure_threshold: 3
+  initial_delay_seconds: 0
+  period_seconds: 10
+  success_threshold: 1
+  timeout_seconds: 1
+# Readiness probe is used to check if the service is ready to accept requests
+readiness_probe:
   config:
     type: http
     path: /health
@@ -49,5 +53,3 @@ resources:
   memory_limit: 1000
   ephemeral_storage_request: 500
   ephemeral_storage_limit: 500
-auto_shutdown:
-  wait_time: 900

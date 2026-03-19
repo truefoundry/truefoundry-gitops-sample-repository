@@ -20,23 +20,6 @@ ports:
     app_protocol: http
     host: <HOST>
 workspace_fqn: <WORKSPACE_FQN>
-replicas: 1
-labels:
-  tfy_openapi_path: openapi.json
-allow_interception: false
-env:
-  TEST_ENV: value
-  TEST_ENV2: value2
-liveness_probe:
-  config:
-    type: http
-    path: /health
-    port: 8000
-  failure_threshold: 3
-  initial_delay_seconds: 0
-  period_seconds: 10
-  success_threshold: 1
-  timeout_seconds: 1
 resources:
   node:
     type: node_selector
@@ -47,5 +30,3 @@ resources:
   memory_limit: 1000
   ephemeral_storage_request: 500
   ephemeral_storage_limit: 500
-auto_shutdown:
-  wait_time: 900
