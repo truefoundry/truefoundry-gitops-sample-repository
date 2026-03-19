@@ -1,5 +1,5 @@
 # Secured repo variables: TFY_API_KEY, TFY_HOST
-# tfy apply -d . includes nested dirs; rm CI YAML so TFY does not load pipelines/workflows.
+# tfy apply --dir . includes nested dirs; rm CI YAML so TFY does not load pipelines/workflows.
 image: python:3.8
 
 pipelines:
@@ -11,7 +11,7 @@ pipelines:
             - apt-get update && apt-get install -y git
             - pip install -U "truefoundry"
             - rm -f bitbucket-pipelines.yml
-            - tfy apply -d truefoundry --dry-run --show-diff --diffs-only --sync --ref "${BITBUCKET_PR_DESTINATION_COMMIT}"
+            - tfy apply --dir truefoundry --dry-run --show-diff --diffs-only --sync --ref "${BITBUCKET_PR_DESTINATION_COMMIT}"
 
   branches:
     main:
@@ -21,4 +21,4 @@ pipelines:
             - apt-get update && apt-get install -y git
             - pip install -U "truefoundry"
             - rm -f bitbucket-pipelines.yml
-            - tfy apply -d truefoundry --diffs-only --sync --ref "HEAD^"
+            - tfy apply --dir truefoundry --diffs-only --sync --ref "HEAD^"

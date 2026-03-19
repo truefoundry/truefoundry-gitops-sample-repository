@@ -2,7 +2,7 @@
 
 Sample repo for TrueFoundry GitOps: cluster, workspace, application, gateway, and access configuration in one place. CI runs **`tfy apply`** in dry-run on pull requests and applies changes when you merge (or push) to **`main`**.
 
-All manifests live under **`truefoundry/`** so a single directory can be passed to the CLI (`tfy apply -d truefoundry`).
+All manifests live under **`truefoundry/`** so a single directory can be passed to the CLI (`tfy apply --dir truefoundry`).
 
 ## Folder structure
 
@@ -92,14 +92,14 @@ Workflows (`.github/workflows/`):
 
 - **When:** `pull_request` — `opened`, `synchronize`.
 - **What it does:** Installs the TrueFoundry CLI and runs:
-  - `tfy apply -d truefoundry --dry-run --show-diff --diffs-only --sync --ref origin/<base_branch>`
+  - `tfy apply --dir truefoundry --dry-run --show-diff --diffs-only --sync --ref origin/<base_branch>`
 - **Meaning:** Only manifests that **differ from the PR base branch** are simulated; output includes diffs. No separate YAML/name validation step — invalid manifests surface as CLI errors.
 
 ### 2. `apply_on_merge.yaml`
 
 - **When:** `push` to **`main`**.
 - **What it does:**
-  - `tfy apply -d truefoundry --diffs-only --sync --ref "${{ github.event.before }}"`
+  - `tfy apply --dir truefoundry --diffs-only --sync --ref "${{ github.event.before }}"`
 - **Meaning:** Applies only what changed in **that push** relative to the previous tip of `main` (typical merge or direct push).
 
 > **Note:** Workflows must exist on the **default branch** for PR-triggered jobs to run. First-time workflow PRs need that file merged (or present) on the default branch.
@@ -112,8 +112,8 @@ Workflows (`.github/workflows/`):
 
 | Pipeline | When | Command |
 |----------|------|--------|
-| **TFY dry-run** | Pull requests | `tfy apply -d truefoundry --dry-run --show-diff --diffs-only --sync --ref "$BITBUCKET_PR_DESTINATION_COMMIT"` |
-| **TFY apply** | Push to **main** | `tfy apply -d truefoundry --diffs-only --sync --ref "HEAD^"` |
+| **TFY dry-run** | Pull requests | `tfy apply --dir truefoundry --dry-run --show-diff --diffs-only --sync --ref "$BITBUCKET_PR_DESTINATION_COMMIT"` |
+| **TFY apply** | Push to **main** | `tfy apply --dir truefoundry --diffs-only --sync --ref "HEAD^"` |
 
 Set secured variables **`TFY_API_KEY`** and **`TFY_HOST`**. The pipeline removes **`bitbucket-pipelines.yml`** before apply so the pipeline file is not treated as a manifest.
 
@@ -127,10 +127,10 @@ export TFY_HOST=...
 export TFY_API_KEY=...
 
 # Dry-run entire tree vs current branch tip
-tfy apply -d truefoundry --dry-run --show-diff
+tfy apply --dir truefoundry --dry-run --show-diff
 
 # Apply everything under truefoundry (no git diff filter)
-tfy apply -d truefoundry
+tfy apply --dir truefoundry
 ```
 
 Use **`--diffs-only`** and **`--ref <commit>`** when you only want changed files (same as CI).
