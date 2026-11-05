@@ -1,0 +1,20 @@
+name: cedar-local
+type: gateway-guardrails-config
+when:
+  target:
+    operator: or
+    conditions:
+      mcpServers:
+        values:
+          - github-mcp
+        condition: in
+  subjects:
+    operator: and
+    conditions:
+      in:
+        - user:bob@truefoundry.com
+llm_input_guardrails: []
+llm_output_guardrails: []
+mcp_tool_pre_invoke_guardrails:
+  - palo-alto-guardrail/palo-alto
+mcp_tool_post_invoke_guardrails: []

@@ -1,5 +1,5 @@
 type: job
-name: <JOB_NAME>
+name: iris-train-image
 image:
   type: image
   image_uri: public.ecr.aws/truefoundrycloud/train-iris-job:0.1.1

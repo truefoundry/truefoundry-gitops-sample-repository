@@ -1,0 +1,7 @@
+name: skip-logging-for-frontend
+type: gateway-logging-config
+when:
+  subjects:
+    in:
+      - team:frontend
+log: false

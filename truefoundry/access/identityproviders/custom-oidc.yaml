@@ -1,0 +1,12 @@
+name: custom-oidc
+type: identity-provider
+provider: custom
+config:
+  type: jwt
+  issuer: https://accounts.example.com
+  audiences:
+    - <AUDIENCE>
+  jwks_uri: https://accounts.example.com/.well-known/jwks.json
+resolve_token_to:
+  user:
+    email_claim: email

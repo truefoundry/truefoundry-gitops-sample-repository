@@ -5,7 +5,7 @@ rules:
     unit: requests_per_hour
     when:
       models:
-        - anthropic/claude-3-5-sonnet-20240620
+        - anthropic-model/claude-opus-4-1
       subjects:
         - user:bob@gmail.com
     limit_to: 10
@@ -13,11 +13,10 @@ rules:
     unit: requests_per_day
     when:
       models:
-        - llm-gateway-gcp-vertex/gemini-2-0-flash-lite-001
-        - test-realtime-global/gemini-live-2.5-flash-native-audio
+        - gemini-model/gemini-3-flash-preview
+        - gemini-model/gemma-3-27b-it
       metadata:
         key: value
       subjects:
         - user:vik@yahoo.com
     limit_to: 1
-

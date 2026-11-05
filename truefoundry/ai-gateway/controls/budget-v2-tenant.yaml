@@ -1,0 +1,11 @@
+name: budget-v2-tenant
+type: tenant-budget-config
+when:
+  models:
+    in:
+      - openai-model/gpt-5
+limits:
+  cost_per_month: 500
+applies_to:
+  type: per-user
+mode: enforce

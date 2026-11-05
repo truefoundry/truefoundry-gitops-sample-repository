@@ -1,0 +1,14 @@
+name: rate-limit-v2-per-user
+type: tenant-rate-limit-config/model
+when:
+  subjects:
+    teams:
+      in:
+        - backend
+limits:
+  requests_per_minute: 100
+  tokens_per_hour: 100000
+applies_to:
+  type: per-user
+mode: enforce
+log_request_body_on_block: false

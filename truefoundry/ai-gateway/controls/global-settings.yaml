@@ -1,0 +1,9 @@
+type: gateway-global-settings
+retry_settings:
+  attempts: 2
+  delay: 100
+  on_status_codes:
+    - '429'
+    - '500'
+    - '502'
+    - '503'

@@ -1,0 +1,14 @@
+name: virtual-model
+type: provider-account/virtual-model
+integrations:
+  - name: smart-chat
+    type: integration/model/virtual
+    model_types:
+      - chat
+    routing_config:
+      type: weight-based-routing
+      load_balance_targets:
+        - target: openai-model/gpt-5
+          weight: 80
+        - target: anthropic-model/claude-opus-4-1
+          weight: 20

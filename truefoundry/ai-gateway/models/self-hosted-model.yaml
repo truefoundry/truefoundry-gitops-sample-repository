@@ -1,0 +1,13 @@
+name: self-hosted-model
+type: provider-account/self-hosted-model
+integrations:
+  - name: smollm-135m-instruct
+    type: integration/model/self-hosted-model
+    url: https://smollm-135m-instruct.example.com
+    hosted_model_name: huggingfacetb-smollm-135m-instruct
+    model_server: vllm-openai
+    model_types:
+      - chat
+      - completion
+    authorized_subjects:
+      - team:everyone

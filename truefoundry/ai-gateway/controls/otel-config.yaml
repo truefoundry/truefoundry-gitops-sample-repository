@@ -1,0 +1,7 @@
+type: gateway-otel-config
+otel_traces_exporter_config:
+  type: http
+  endpoint: https://otel-collector.example.com/v1/traces
+  encoding: proto
+  headers:
+    Authorization: Bearer <API_KEY>

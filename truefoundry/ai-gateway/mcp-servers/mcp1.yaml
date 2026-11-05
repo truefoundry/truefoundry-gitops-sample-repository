@@ -7,16 +7,10 @@ integrations:
   - url: https://docs.mcp.cloudflare.com/sse
     name: cloudflare
     type: integration/mcp-server/remote
-    transport: sse
+    transport: streamable-http
     description: Search Cloudflare documentation
   - name: test-virtual-mcp
     type: integration/mcp-server/virtual
     servers:
-      - name: mcp1/sentry
-        enabled_tools:
-          - whoami
-      - name: mcp1/deepwiki
-        enabled_tools:
-          - read_wiki_structure
-          - read_wiki_contents
+      - name: mcp1/cloudflare
     description: Test Virtual MCP Server

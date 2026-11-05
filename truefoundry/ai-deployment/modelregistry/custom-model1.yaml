@@ -5,7 +5,7 @@ metadata:
   model_type: text-generation
   framework_version: 2.0.0
 version_alias: v1
-ml_repo: automation-ml-repo
+ml_repo: ml-agent
 version: 1
 type: model-version
 source:
@@ -15,10 +15,9 @@ source:
 framework:
   type: pytorch
 environment:
-  python_version: null
+  python_version: "3.11"
   pip_packages:
     - pandas
     - numpy
 step: 0
-run_id: null
 

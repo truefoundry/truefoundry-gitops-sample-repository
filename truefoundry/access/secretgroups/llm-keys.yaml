@@ -1,0 +1,6 @@
+name: llm-keys
+type: secret-group
+integration_fqn: <SECRET_STORE_INTEGRATION_FQN>
+collaborators:
+  - role_id: secret-group-admin
+    subject: team:backend
