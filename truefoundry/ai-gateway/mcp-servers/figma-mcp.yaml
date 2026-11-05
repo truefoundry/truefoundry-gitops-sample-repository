@@ -5,6 +5,7 @@ auth_data:
   type: header
   headers:
     Authorization: Bearer <API_KEY>
+  auth_level: global
 description: figma
 collaborators:
   - role_id: mcp-server-manager

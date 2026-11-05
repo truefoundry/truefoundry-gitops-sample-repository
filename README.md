@@ -26,12 +26,11 @@ truefoundry/
 │   ├── modelregistry/
 │   └── polices/               # validate / mutate policies
 ├── ai-gateway/                # Gateway: models, guardrails, MCP, controls, agents
-│   ├── agent/
+│   ├── agents/
 │   ├── controls/
 │   ├── guardrails/
 │   ├── mcp-servers/
 │   └── models/
-├── integrations/              # Integration manifests (repo-level)
 └── repositories/              # Repository definitions
 ```
 
@@ -42,7 +41,6 @@ truefoundry/
 | **access/** | External auth, identities, identity providers, roles, teams, virtual accounts |
 | **ai-deployment/** | Clusters, nested workspaces & applications, environments, policies, custom models |
 | **ai-gateway/** | AI Gateway: models, guardrails, MCP servers, controls, agents |
-| **integrations/** | Integration provider configs |
 | **repositories/** | Repository specs (artifacts, images, etc.) |
 
 ## File naming conventions
@@ -69,7 +67,7 @@ truefoundry/
 
 - **models/**, **guardrails/**, **mcp-servers/** — one YAML per resource; name aligned with filename where applicable.
 - **controls/** — gateway control configs (routing, budget, data access, etc.).
-- **agent/** — agent definitions.
+- **agents/** — agent definitions.
 
 ### Repositories
 

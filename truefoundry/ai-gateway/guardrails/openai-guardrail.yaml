@@ -1,13 +1,15 @@
 name: openai-guardrail
+type: provider-account/guardrail-config-group
 collaborators:
   - role_id: provider-account-manager
     subject: team:everyone
 integrations:
-  - type: integration/guardrail-config/openai-moderations
+  - name: openai-guardrail-integration
+    type: integration/guardrail-config/openai-moderations
+    config:
+      model: omni-moderation-latest
     auth_data:
       type: api-key
       api_key: <API_KEY>
-    name: openai-guardrail-integration
-    model: omni-moderation-latest
     operation: validate
-type: provider-account/guardrail-config-group
+    enforcing_strategy: enforce

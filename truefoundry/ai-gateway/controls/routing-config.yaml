@@ -5,9 +5,9 @@ rules:
     type: priority-based-routing
     when:
       models:
-        - gcpmodel/gpt-5-nano
+        - openai-model/gpt-5
     load_balance_targets:
-      - target: gcpmodel/gpt-5-nano
+      - target: openai-model/gpt-5
         priority: 2
         sla_cutoff:
           time_per_output_token_ms: 30000
@@ -30,27 +30,26 @@ rules:
           - '503'
           - '408'
           - '504'
-      - target: gcpmodel/gpt-4o-mini
+      - target: anthropic-model/claude-opus-4-1
         priority: 2
         override_params:
-          temperature: 231
+          temperature: 0.7
         fallback_candidate: true
   - id: codex-cli
     type: weight-based-routing
     when:
       models:
-        - gpt-5.2-codex
+        - gemini-model/gemini-3-flash-preview
     load_balance_targets:
-      - target: google-vertex/anthropic-claude-3-5-haiku
+      - target: gemini-model/gemma-3-27b-it
         weight: 100
         fallback_candidate: true
-- id: claude-sonnet
+  - id: claude-sonnet
     type: weight-based-routing
     when:
       subjects:
         - user:bob@gmail.com
     load_balance_targets:
-      - target: google-vertex/anthropic-claude-3-5-haiku
+      - target: anthropic-model/claude-opus-4-1
         weight: 100
         fallback_candidate: true
-
