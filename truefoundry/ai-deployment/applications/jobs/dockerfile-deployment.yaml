@@ -1,5 +1,5 @@
 type: job
-name: <JOB_NAME>
+name: iris-train-dockerfile
 image:
   type: build
   build_source:

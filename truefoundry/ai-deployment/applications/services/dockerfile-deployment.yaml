@@ -1,5 +1,5 @@
 type: service
-name: <SERVICE_NAME>
+name: emotion-clf-dockerfile
 image:
   type: build
   build_source:

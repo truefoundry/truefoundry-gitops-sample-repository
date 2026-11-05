@@ -1,5 +1,5 @@
 type: service
-name: <SERVICE_NAME>
+name: emotion-clf-image
 image:
   type: image
   image_uri: <IMAGE_URI>

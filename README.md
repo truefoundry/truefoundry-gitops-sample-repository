@@ -8,11 +8,10 @@ All manifests live under **`truefoundry/`** so a single directory can be passed 
 
 ```
 truefoundry/
-├── access/                    # Identity, teams, roles, virtual accounts
-│   ├── externalauth/
-│   │   ├── identities/
-│   │   └── identityproviders/
+├── access/                    # Identity providers, teams, roles, virtual accounts, secret groups
+│   ├── identityproviders/
 │   ├── roles/
+│   ├── secretgroups/
 │   ├── teams/
 │   └── virtualaccounts/
 ├── ai-deployment/             # Clusters, workspaces, apps, envs, policies, model registry
@@ -38,7 +37,7 @@ truefoundry/
 
 | Path | Purpose |
 |------|--------|
-| **access/** | External auth, identities, identity providers, roles, teams, virtual accounts |
+| **access/** | Identity providers, roles, secret groups, teams, virtual accounts |
 | **ai-deployment/** | Clusters, nested workspaces & applications, environments, policies, custom models |
 | **ai-gateway/** | AI Gateway: models, guardrails, MCP servers, controls, agents |
 | **repositories/** | Repository specs (artifacts, images, etc.) |
@@ -47,9 +46,9 @@ truefoundry/
 
 ### Access
 
-- **externalauth/identities/** — one YAML per external identity (`<name>.yaml`).
-- **externalauth/identityproviders/** — one YAML per provider (`<name>.yaml`).
+- **identityproviders/** — one YAML per identity provider (`<name>.yaml`).
 - **roles/** — `<role-name>.yaml`.
+- **secretgroups/** — `<secret-group-name>.yaml`.
 - **teams/** — `<team-name>.yaml`; typically align `.name` with the filename.
 - **virtualaccounts/** — `<virtual-account-name>.yaml`; typically align `.name` with the filename.
 

@@ -3,7 +3,7 @@ description: mutation policy
 operation:
   type: mutate
   order: 6
-mode: audit|disabled|enforce
+mode: audit
 entities:
   - service
   - job
@@ -15,5 +15,5 @@ code: |-
 type: policy
 filters:
   workspace_names:
-    - <workspace_name>
+    - workspace1
 
