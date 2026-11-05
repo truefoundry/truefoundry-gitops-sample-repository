@@ -24,12 +24,15 @@ truefoundry/
 │   ├── environments/
 │   ├── modelregistry/
 │   └── polices/               # validate / mutate policies
-├── ai-gateway/                # Gateway: models, guardrails, MCP, controls, agents
+├── ai-gateway/                # Gateway: models, guardrails, MCP, skills, prompts, controls, agents
 │   ├── agents/
 │   ├── controls/
 │   ├── guardrails/
 │   ├── mcp-servers/
-│   └── models/
+│   ├── models/
+│   ├── prompts/
+│   ├── skills/
+│   └── virtual-models/
 └── repositories/              # Repository definitions
 ```
 
@@ -39,7 +42,7 @@ truefoundry/
 |------|--------|
 | **access/** | Identity providers, roles, secret groups, teams, virtual accounts |
 | **ai-deployment/** | Clusters, nested workspaces & applications, environments, policies, custom models |
-| **ai-gateway/** | AI Gateway: models, guardrails, MCP servers, controls, agents |
+| **ai-gateway/** | AI Gateway: models, virtual models, guardrails, MCP servers, skills, prompts, controls, agents |
 | **repositories/** | Repository specs (artifacts, images, etc.) |
 
 ## File naming conventions
@@ -64,13 +67,19 @@ truefoundry/
 
 ### AI gateway
 
-- **models/**, **guardrails/**, **mcp-servers/** — one YAML per resource; name aligned with filename where applicable.
-- **controls/** — gateway control configs (routing, budget, data access, etc.).
+- **models/**, **virtual-models/**, **guardrails/**, **mcp-servers/** — one YAML per resource; name aligned with filename where applicable.
+- **skills/**, **prompts/** — one YAML per skill or prompt; each names the `ml_repo` it is stored in (see `repositories/`).
+- **controls/** — gateway control configs (routing, rate limits, budgets, guardrail rules, data access, logging, OTEL, global settings).
 - **agents/** — agent definitions.
 
 ### Repositories
 
 - **repositories/** — `<repository-name>.yaml`.
+
+## Things to know before applying
+
+- **Apply `repositories/` first on a new tenant.** Prompts and skills are stored in an ML repo, and `tfy apply` does not wait for the repo to be created first: `tfy apply -f truefoundry/repositories/<repository-name>.yaml`.
+- **Some gateway configs are tenant-wide.** `otel-config.yaml`, `global-settings.yaml` and `data-access.yaml` have one copy per tenant, so applying them replaces the existing settings.
 
 ---
 

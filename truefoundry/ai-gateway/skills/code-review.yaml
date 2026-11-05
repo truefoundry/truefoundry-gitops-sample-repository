@@ -1,0 +1,17 @@
+name: code-review
+type: agent-skill
+ml_repo: ml-agent
+metadata: {}
+source:
+  type: inline
+  skill_md: |
+    ---
+    name: code-review
+    description: Review a pull request diff for correctness bugs and suggest fixes.
+    ---
+
+    # Code review
+
+    1. Read the diff and the files it touches.
+    2. List correctness bugs first, then style issues.
+    3. Suggest a concrete fix for each bug.
