@@ -1,0 +1,8 @@
+name: github-agent
+type: agent/remote
+description: Registers an externally hosted GitHub agent with the gateway
+proxy_via_gateway:
+  enabled: false
+collaborators:
+  - subject: team:everyone
+    role_id: agent-access

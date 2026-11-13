@@ -14,7 +14,7 @@ integrations:
       profile_name: TF-Test-DG
     auth_data:
       type: api-key
-      api_key: tfy-secret://truefoundry:prisma:PRISMA_AIRS_KEY_3
+      api_key: <API_KEY>
     operation: validate
     description: Palo Alto Prisma AIRS for AI security and content validation
     enforcing_strategy: enforce_but_ignore_on_error

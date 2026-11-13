@@ -1,0 +1,7 @@
+url: https://docs.mcp.cloudflare.com/mcp
+name: cloudflare-docs-mcp
+type: mcp-server/remote
+description: Search Cloudflare documentation
+collaborators:
+  - role_id: mcp-server-manager
+    subject: team:everyone

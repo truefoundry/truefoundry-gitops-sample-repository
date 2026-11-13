@@ -1,0 +1,20 @@
+name: pii-guardrail-test
+type: gateway-guardrails-config
+when:
+  target:
+    operator: or
+    conditions:
+      model:
+        values:
+          - openai-model/gpt-5
+        condition: in
+  subjects:
+    operator: and
+    conditions:
+      in:
+        - user:vik@truefoundry.com
+llm_input_guardrails:
+  - azure-guardrail/azure-guardrail
+llm_output_guardrails: []
+mcp_tool_pre_invoke_guardrails: []
+mcp_tool_post_invoke_guardrails: []

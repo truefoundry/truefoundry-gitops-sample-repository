@@ -1,0 +1,15 @@
+name: support-assistant
+type: chat_prompt
+ml_repo: ml-agent
+metadata: {}
+model_configuration:
+  provider: openai-model
+  model: gpt-5
+messages:
+  - role: system
+    content: You are a helpful support assistant for {{product}}. Answer concisely.
+  - role: user
+    content: '{{question}}'
+variables:
+  product: TrueFoundry
+  question: null

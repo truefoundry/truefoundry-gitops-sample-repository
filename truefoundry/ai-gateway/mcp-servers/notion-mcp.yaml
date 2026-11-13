@@ -3,6 +3,8 @@ name: notion-mcp
 type: mcp-server/remote
 auth_data:
   type: oauth2
+  grant_type: authorization_code
+  provider: custom
   scopes: []
   token_url: https://mcp.notion.com/token
   jwt_source: access_token

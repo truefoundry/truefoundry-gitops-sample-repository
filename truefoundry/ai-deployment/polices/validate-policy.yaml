@@ -2,7 +2,7 @@ name: validate-policy
 description: validation policy
 operation:
   type: validate
-mode: audit|disabled|enforce
+mode: audit
 entities:
   - service
   - async-service

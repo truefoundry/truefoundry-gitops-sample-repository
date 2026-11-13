@@ -8,11 +8,10 @@ All manifests live under **`truefoundry/`** so a single directory can be passed 
 
 ```
 truefoundry/
-├── access/                    # Identity, teams, roles, virtual accounts
-│   ├── externalauth/
-│   │   ├── identities/
-│   │   └── identityproviders/
+├── access/                    # Identity providers, teams, roles, virtual accounts, secret groups
+│   ├── identityproviders/
 │   ├── roles/
+│   ├── secretgroups/
 │   ├── teams/
 │   └── virtualaccounts/
 ├── ai-deployment/             # Clusters, workspaces, apps, envs, policies, model registry
@@ -25,13 +24,15 @@ truefoundry/
 │   ├── environments/
 │   ├── modelregistry/
 │   └── polices/               # validate / mutate policies
-├── ai-gateway/                # Gateway: models, guardrails, MCP, controls, agents
-│   ├── agent/
+├── ai-gateway/                # Gateway: models, guardrails, MCP, skills, prompts, controls, agents
+│   ├── agents/
 │   ├── controls/
 │   ├── guardrails/
 │   ├── mcp-servers/
-│   └── models/
-├── integrations/              # Integration manifests (repo-level)
+│   ├── models/
+│   ├── prompts/
+│   ├── skills/
+│   └── virtual-models/
 └── repositories/              # Repository definitions
 ```
 
@@ -39,19 +40,18 @@ truefoundry/
 
 | Path | Purpose |
 |------|--------|
-| **access/** | External auth, identities, identity providers, roles, teams, virtual accounts |
+| **access/** | Identity providers, roles, secret groups, teams, virtual accounts |
 | **ai-deployment/** | Clusters, nested workspaces & applications, environments, policies, custom models |
-| **ai-gateway/** | AI Gateway: models, guardrails, MCP servers, controls, agents |
-| **integrations/** | Integration provider configs |
+| **ai-gateway/** | AI Gateway: models, virtual models, guardrails, MCP servers, skills, prompts, controls, agents |
 | **repositories/** | Repository specs (artifacts, images, etc.) |
 
 ## File naming conventions
 
 ### Access
 
-- **externalauth/identities/** — one YAML per external identity (`<name>.yaml`).
-- **externalauth/identityproviders/** — one YAML per provider (`<name>.yaml`).
+- **identityproviders/** — one YAML per identity provider (`<name>.yaml`).
 - **roles/** — `<role-name>.yaml`.
+- **secretgroups/** — `<secret-group-name>.yaml`.
 - **teams/** — `<team-name>.yaml`; typically align `.name` with the filename.
 - **virtualaccounts/** — `<virtual-account-name>.yaml`; typically align `.name` with the filename.
 
@@ -67,13 +67,19 @@ truefoundry/
 
 ### AI gateway
 
-- **models/**, **guardrails/**, **mcp-servers/** — one YAML per resource; name aligned with filename where applicable.
-- **controls/** — gateway control configs (routing, budget, data access, etc.).
-- **agent/** — agent definitions.
+- **models/**, **virtual-models/**, **guardrails/**, **mcp-servers/** — one YAML per resource; name aligned with filename where applicable.
+- **skills/**, **prompts/** — one YAML per skill or prompt; each names the `ml_repo` it is stored in (see `repositories/`).
+- **controls/** — gateway control configs (routing, rate limits, budgets, guardrail rules, data access, logging, OTEL, global settings).
+- **agents/** — agent definitions.
 
 ### Repositories
 
 - **repositories/** — `<repository-name>.yaml`.
+
+## Things to know before applying
+
+- **Apply `repositories/` first on a new tenant.** Prompts and skills are stored in an ML repo, and `tfy apply` does not wait for the repo to be created first: `tfy apply -f truefoundry/repositories/<repository-name>.yaml`.
+- **Some gateway configs are tenant-wide.** `otel-config.yaml`, `global-settings.yaml` and `data-access.yaml` have one copy per tenant, so applying them replaces the existing settings.
 
 ---
 

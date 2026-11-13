@@ -5,11 +5,8 @@ permissions:
     resource_fqn: cluster1
     resource_type: cluster
   - role_id: provider-integration-access
-    resource_fqn: truefoundry:openai:openai-main:model:gpt-4
+    resource_fqn: <TENANT_NAME>:openai:openai-model:model:gpt-5
     resource_type: provider-integration
   - role_id: provider-integration-access
-    resource_fqn: truefoundry:openai:openai-main:model:gpt-4o-mini
-    resource_type: provider-integration
-  - role_id: provider-integration-access
-    resource_fqn: truefoundry:openai:openai-main:model:gpt-3-5-turbo
+    resource_fqn: <TENANT_NAME>:anthropic:anthropic-model:model:claude-opus-4-1
     resource_type: provider-integration

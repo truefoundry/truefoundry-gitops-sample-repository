@@ -1,5 +1,5 @@
 name: data-access
-type: data-access-config
+type: gateway-data-access-config
 rules:
   - id: default-everyone-own-data
     scope: own_data
@@ -28,4 +28,3 @@ rules:
       - traces
       - metrics
     description: 'Default rule: Tenant Admins can access all data'
-
