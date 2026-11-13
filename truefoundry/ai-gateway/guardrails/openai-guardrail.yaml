@@ -1,8 +1,5 @@
 name: openai-guardrail
 type: provider-account/guardrail-config-group
-collaborators:
-  - role_id: provider-account-manager
-    subject: team:everyone
 integrations:
   - name: openai-guardrail-integration
     type: integration/guardrail-config/openai-moderations
@@ -13,3 +10,13 @@ integrations:
       api_key: <API_KEY>
     operation: validate
     enforcing_strategy: enforce
+---
+type: role-binding
+name: pa-openai-guardrail-manager-1i
+subjects:
+  - type: team
+    name: everyone
+permissions:
+  - resourceType: provider-account
+    resourceFqn: truefoundry:guardrail-config-group:openai-guardrail
+    role: provider-account-manager

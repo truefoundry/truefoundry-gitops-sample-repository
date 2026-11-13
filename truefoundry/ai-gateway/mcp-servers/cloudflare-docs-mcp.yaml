@@ -2,6 +2,13 @@ url: https://docs.mcp.cloudflare.com/mcp
 name: cloudflare-docs-mcp
 type: mcp-server/remote
 description: Search Cloudflare documentation
-collaborators:
-  - role_id: mcp-server-manager
-    subject: team:everyone
+---
+type: role-binding
+name: mcp-cloudflare-docs-mcp-manager-xg
+subjects:
+  - type: team
+    name: everyone
+permissions:
+  - resourceType: mcp-server
+    resourceFqn: truefoundry:mcp-server:cloudflare-docs-mcp
+    role: mcp-server-manager

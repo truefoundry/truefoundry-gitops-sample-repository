@@ -1,10 +1,5 @@
 name: bedrock-guardrail
 type: provider-account/guardrail-config-group
-collaborators:
-  - role_id: provider-account-manager
-    subject: user:<USER_EMAIL>
-  - role_id: provider-account-access
-    subject: team:everyone
 integrations:
   - name: bedrock
     type: integration/guardrail-config/aws-bedrock
@@ -18,3 +13,23 @@ integrations:
     operation: validate
     description: AWS Bedrock Guardrails for content filtering and safety policies
     enforcing_strategy: enforce_but_ignore_on_error
+---
+type: role-binding
+name: pa-bedrock-guardrail-manager-tm
+subjects:
+  - type: user
+    name: <USER_EMAIL>
+permissions:
+  - resourceType: provider-account
+    resourceFqn: truefoundry:guardrail-config-group:bedrock-guardrail
+    role: provider-account-manager
+---
+type: role-binding
+name: pa-bedrock-guardrail-access-j5
+subjects:
+  - type: team
+    name: everyone
+permissions:
+  - resourceType: provider-account
+    resourceFqn: truefoundry:guardrail-config-group:bedrock-guardrail
+    role: provider-account-access

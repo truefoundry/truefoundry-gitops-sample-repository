@@ -1,10 +1,5 @@
 type: provider-account/aws-bedrock
 name: aws-bedrock-model
-collaborators:
-  - role_id: provider-account-manager
-    subject: user:<USER_EMAIL>
-  - role_id: provider-account-access
-    subject: team:everyone
 region: us-east-1
 auth_data:
   type: access-key-based
@@ -35,3 +30,23 @@ integrations:
     model_id: us.meta.llama3-2-1b-instruct-v1:0
     model_types:
       - chat
+---
+type: role-binding
+name: pa-aws-bedrock-model-manager-nn
+subjects:
+  - type: user
+    name: <USER_EMAIL>
+permissions:
+  - resourceType: provider-account
+    resourceFqn: truefoundry:aws-bedrock:aws-bedrock-model
+    role: provider-account-manager
+---
+type: role-binding
+name: pa-aws-bedrock-model-access-4v
+subjects:
+  - type: team
+    name: everyone
+permissions:
+  - resourceType: provider-account
+    resourceFqn: truefoundry:aws-bedrock:aws-bedrock-model
+    role: provider-account-access

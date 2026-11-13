@@ -1,8 +1,5 @@
 name: openai-model
 type: provider-account/openai
-collaborators:
-  - subject: team:everyone
-    role_id: provider-account-manager
 auth_data:
   api_key: <API_KEY>
   type: api-key
@@ -14,3 +11,13 @@ integrations:
       - chat
     cost:
       metric: public_cost
+---
+type: role-binding
+name: pa-openai-model-manager-4p
+subjects:
+  - type: team
+    name: everyone
+permissions:
+  - resourceType: provider-account
+    resourceFqn: truefoundry:openai:openai-model
+    role: provider-account-manager

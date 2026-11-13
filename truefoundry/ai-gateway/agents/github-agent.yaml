@@ -3,6 +3,13 @@ type: agent/remote
 description: Registers an externally hosted GitHub agent with the gateway
 proxy_via_gateway:
   enabled: false
-collaborators:
-  - subject: team:everyone
-    role_id: agent-access
+---
+type: role-binding
+name: agt-github-agent-access-nz
+subjects:
+  - type: team
+    name: everyone
+permissions:
+  - resourceType: agent
+    resourceFqn: truefoundry:agent:github-agent
+    role: agent-access

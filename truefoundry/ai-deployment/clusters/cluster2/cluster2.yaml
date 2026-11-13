@@ -2,13 +2,6 @@ name: cluster2
 cluster_type: aws-eks
 environment_names:
   - prod
-collaborators:
-  - role_id: cluster-admin
-    subject: user:alice@example.com
-  - role_id: cluster-admin
-    subject: user:bob@example.com
-  - role_id: cluster-viewer
-    subject: team:developers
 type: cluster
 base_domains:
   - '*.example.com'
@@ -30,3 +23,25 @@ supported_nodepools:
   - name: test-np
   - name: test-np2
 default_registry_fqn: internal:registry:example-registry:docker-registry:internal-images
+---
+type: role-binding
+name: cl-cluster2-admin-lf
+subjects:
+  - type: user
+    name: alice@example.com
+  - type: user
+    name: bob@example.com
+permissions:
+  - resourceType: cluster
+    resourceFqn: cluster2
+    role: cluster-admin
+---
+type: role-binding
+name: cl-cluster2-viewer-mq
+subjects:
+  - type: team
+    name: developers
+permissions:
+  - resourceType: cluster
+    resourceFqn: cluster2
+    role: cluster-viewer

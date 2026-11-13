@@ -7,6 +7,13 @@ auth_data:
     Authorization: Bearer <API_KEY>
   auth_level: global
 description: figma
-collaborators:
-  - role_id: mcp-server-manager
-    subject: user:<USER_EMAIL>
+---
+type: role-binding
+name: mcp-figma-mcp-manager-ul
+subjects:
+  - type: user
+    name: <USER_EMAIL>
+permissions:
+  - resourceType: mcp-server
+    resourceFqn: truefoundry:mcp-server:figma-mcp
+    role: mcp-server-manager

@@ -1,10 +1,5 @@
 type: provider-account/google-gemini
 name: gemini-model
-collaborators:
-  - role_id: provider-account-manager
-    subject: user:<USER_EMAIL>
-  - role_id: provider-account-access
-    subject: team:everyone
 auth_data:
   apiKey: <API_KEY>
   type: api-key
@@ -23,3 +18,23 @@ integrations:
     model_id: gemma-3-27b-it
     model_types:
       - chat
+---
+type: role-binding
+name: pa-gemini-model-manager-xd
+subjects:
+  - type: user
+    name: <USER_EMAIL>
+permissions:
+  - resourceType: provider-account
+    resourceFqn: truefoundry:google-gemini:gemini-model
+    role: provider-account-manager
+---
+type: role-binding
+name: pa-gemini-model-access-72
+subjects:
+  - type: team
+    name: everyone
+permissions:
+  - resourceType: provider-account
+    resourceFqn: truefoundry:google-gemini:gemini-model
+    role: provider-account-access

@@ -1,10 +1,5 @@
 type: provider-account/anthropic
 name: anthropic-model
-collaborators:
-  - role_id: provider-account-manager
-    subject: user:<USER_EMAIL>
-  - role_id: provider-account-access
-    subject: team:everyone
 auth_data:
   api_key: <API_KEY>
   type: api-key
@@ -23,3 +18,23 @@ integrations:
     model_id: claude-4-opus-20250514
     model_types:
       - chat
+---
+type: role-binding
+name: pa-anthropic-model-manager-if
+subjects:
+  - type: user
+    name: <USER_EMAIL>
+permissions:
+  - resourceType: provider-account
+    resourceFqn: truefoundry:anthropic:anthropic-model
+    role: provider-account-manager
+---
+type: role-binding
+name: pa-anthropic-model-access-7e
+subjects:
+  - type: team
+    name: everyone
+permissions:
+  - resourceType: provider-account
+    resourceFqn: truefoundry:anthropic:anthropic-model
+    role: provider-account-access
