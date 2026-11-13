@@ -57,8 +57,8 @@ truefoundry/
 
 ### AI deployment
 
-- **clusters/&lt;cluster&gt;/** — cluster manifest; cluster name usually matches the folder.
-- **workspaces/** — per-workspace folder + `<workspace-name>.yaml`.
+- **clusters/&lt;cluster&gt;/** — cluster manifest, with its role bindings after a `---`; cluster name usually matches the folder.
+- **workspaces/** — per-workspace folder + `<workspace-name>.yaml`, with its role bindings after a `---`.
 - **applications/** — one YAML per application (`<application-name>.yaml`).
 - **environments/** — `<environment-name>.yaml`.
 - **integrations** (under deployment if used) — `<integration-name>.yaml`.
@@ -67,7 +67,7 @@ truefoundry/
 
 ### AI gateway
 
-- **models/**, **virtual-models/**, **guardrails/**, **mcp-servers/** — one YAML per resource; name aligned with filename where applicable.
+- **models/**, **virtual-models/**, **guardrails/**, **mcp-servers/** — one YAML per resource, with its role bindings after a `---`; name aligned with filename where applicable.
 - **skills/**, **prompts/** — one YAML per skill or prompt; each names the `ml_repo` it is stored in (see `repositories/`).
 - **controls/** — gateway control configs (routing, rate limits, budgets, guardrail rules, data access, logging, OTEL, global settings).
 - **agents/** — agent definitions.
@@ -75,6 +75,29 @@ truefoundry/
 ### Repositories
 
 - **repositories/** — `<repository-name>.yaml`.
+
+## Access control (role bindings)
+
+Access to a resource is managed with **`role-binding`** manifests. A role binding lives in the **same YAML file as its resource**, as a second document after a `---` separator:
+
+```yaml
+name: openai-model
+type: provider-account/openai
+# ... the resource ...
+---
+type: role-binding
+name: pa-openai-model-manager-4p
+subjects:
+  - type: team
+    name: everyone
+permissions:
+  - resourceType: provider-account
+    resourceFqn: <TENANT_NAME>:openai:openai-model
+    role: provider-account-manager
+```
+
+- `collaborators` on a resource is the older, outdated way to grant access. It still works, but the samples use role bindings instead.
+- To convert an existing repo, run `tfy migrate-gitops -d truefoundry`. It rewrites each file's `collaborators` into role bindings in place; review the diff, then apply.
 
 ## Things to know before applying
 
