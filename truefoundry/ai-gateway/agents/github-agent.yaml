@@ -1,9 +1,8 @@
 name: github-agent
-type: truefoundry-agent
-description: github agent
-model:
-  name: openai-model/gpt-5
-instructions: Help the user with GitHub repositories, issues and pull requests.
+type: agent/remote
+description: Registers an externally hosted GitHub agent with the gateway
+proxy_via_gateway:
+  enabled: false
 collaborators:
   - subject: team:everyone
     role_id: agent-access
