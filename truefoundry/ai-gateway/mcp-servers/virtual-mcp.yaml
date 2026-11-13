@@ -1,0 +1,9 @@
+name: virtual-mcp
+type: mcp-server/virtual
+description: Cloudflare docs and Notion tools behind one MCP server
+servers:
+  - name: cloudflare-docs-mcp
+  - name: notion-mcp
+collaborators:
+  - role_id: mcp-server-manager
+    subject: team:everyone

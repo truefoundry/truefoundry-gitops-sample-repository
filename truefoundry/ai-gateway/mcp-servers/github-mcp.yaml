@@ -5,6 +5,8 @@ auth_data:
   type: oauth2
   grant_type: authorization_code
   provider: custom
+  client_id: <CLIENT_ID>
+  client_secret: <CLIENT_SECRET>
   scopes: []
   token_url: https://github.com/login/oauth/access_token
   jwt_source: access_token

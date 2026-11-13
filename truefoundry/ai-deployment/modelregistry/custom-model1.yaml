@@ -9,9 +9,8 @@ ml_repo: ml-agent
 version: 1
 type: model-version
 source:
-  type: truefoundry
-  uri: >-
-    s3://<model_s3_uri>
+  type: external
+  uri: s3://<BUCKET>/<MODEL_PATH>
 framework:
   type: pytorch
 environment:
