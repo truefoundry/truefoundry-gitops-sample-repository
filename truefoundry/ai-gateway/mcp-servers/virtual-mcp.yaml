@@ -4,6 +4,13 @@ description: Cloudflare docs and Notion tools behind one MCP server
 servers:
   - name: cloudflare-docs-mcp
   - name: notion-mcp
-collaborators:
-  - role_id: mcp-server-manager
-    subject: team:everyone
+---
+type: role-binding
+name: mcp-virtual-mcp-manager-mm
+subjects:
+  - type: team
+    name: everyone
+permissions:
+  - resourceType: mcp-server
+    resourceFqn: truefoundry:mcp-server:virtual-mcp
+    role: mcp-server-manager

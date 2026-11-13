@@ -1,11 +1,34 @@
 cluster_fqn: cluster2
 name: workspace1
 environment_name: prod
-collaborators:
-  - role_id: workspace-admin
-    subject: user:bob@example.com
-  - role_id: workspace-viewer
-    subject: user:junaid@example.com
-  - role_id: workspace-editor
-    subject: user:hina@example.com
 type: workspace
+---
+type: role-binding
+name: ws-cluster2-workspace1-admin-wv
+subjects:
+  - type: user
+    name: bob@example.com
+permissions:
+  - resourceType: workspace
+    resourceFqn: cluster2:workspace1
+    role: workspace-admin
+---
+type: role-binding
+name: ws-cluster2-workspace1-viewer-iy
+subjects:
+  - type: user
+    name: junaid@example.com
+permissions:
+  - resourceType: workspace
+    resourceFqn: cluster2:workspace1
+    role: workspace-viewer
+---
+type: role-binding
+name: ws-cluster2-workspace1-editor-1w
+subjects:
+  - type: user
+    name: hina@example.com
+permissions:
+  - resourceType: workspace
+    resourceFqn: cluster2:workspace1
+    role: workspace-editor

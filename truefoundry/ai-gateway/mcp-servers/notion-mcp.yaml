@@ -13,6 +13,13 @@ auth_data:
   code_challenge_methods_supported:
     - S256
 description: Notion is a collaboration and productivity tool.
-collaborators:
-  - role_id: mcp-server-manager
-    subject: user:<USER_EMAIL>
+---
+type: role-binding
+name: mcp-notion-mcp-manager-4l
+subjects:
+  - type: user
+    name: <USER_EMAIL>
+permissions:
+  - resourceType: mcp-server
+    resourceFqn: truefoundry:mcp-server:notion-mcp
+    role: mcp-server-manager

@@ -14,6 +14,13 @@ auth_data:
   code_challenge_methods_supported:
     - S256
 description: GitHub's official MCP Server
-collaborators:
-  - role_id: mcp-server-manager
-    subject: user:<USER_EMAIL>
+---
+type: role-binding
+name: mcp-github-mcp-manager-5z
+subjects:
+  - type: user
+    name: <USER_EMAIL>
+permissions:
+  - resourceType: mcp-server
+    resourceFqn: truefoundry:mcp-server:github-mcp
+    role: mcp-server-manager

@@ -1,10 +1,5 @@
 name: azure-guardrail
 type: provider-account/guardrail-config-group
-collaborators:
-  - role_id: provider-account-manager
-    subject: user:<USER_EMAIL>
-  - role_id: provider-account-access
-    subject: team:everyone
 integrations:
   - name: azure-guardrail
     type: integration/guardrail-config/azure-pii
@@ -23,3 +18,23 @@ integrations:
     operation: mutate
     description: Azure AI Language PII detection and redaction for sensitive data
     enforcing_strategy: enforce
+---
+type: role-binding
+name: pa-azure-guardrail-manager-qa
+subjects:
+  - type: user
+    name: <USER_EMAIL>
+permissions:
+  - resourceType: provider-account
+    resourceFqn: truefoundry:guardrail-config-group:azure-guardrail
+    role: provider-account-manager
+---
+type: role-binding
+name: pa-azure-guardrail-access-d1
+subjects:
+  - type: team
+    name: everyone
+permissions:
+  - resourceType: provider-account
+    resourceFqn: truefoundry:guardrail-config-group:azure-guardrail
+    role: provider-account-access

@@ -1,10 +1,5 @@
 name: palo-alto-guardrail
 type: provider-account/guardrail-config-group
-collaborators:
-  - role_id: provider-account-manager
-    subject: user:<USER_EMAIL>
-  - role_id: provider-account-access
-    subject: team:everyone
 integrations:
   - name: palo-alto
     type: integration/guardrail-config/palo-alto-prisma-airs
@@ -18,3 +13,23 @@ integrations:
     operation: validate
     description: Palo Alto Prisma AIRS for AI security and content validation
     enforcing_strategy: enforce_but_ignore_on_error
+---
+type: role-binding
+name: pa-palo-alto-guardrail-manager-xn
+subjects:
+  - type: user
+    name: <USER_EMAIL>
+permissions:
+  - resourceType: provider-account
+    resourceFqn: truefoundry:guardrail-config-group:palo-alto-guardrail
+    role: provider-account-manager
+---
+type: role-binding
+name: pa-palo-alto-guardrail-access-hx
+subjects:
+  - type: team
+    name: everyone
+permissions:
+  - resourceType: provider-account
+    resourceFqn: truefoundry:guardrail-config-group:palo-alto-guardrail
+    role: provider-account-access

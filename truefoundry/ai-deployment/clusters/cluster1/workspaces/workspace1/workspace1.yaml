@@ -1,7 +1,14 @@
 cluster_fqn: cluster1
 name: workspace1
 environment_name: devtest
-collaborators:
-  - role_id: workspace-admin
-    subject: user:alice@example.com
 type: workspace
+---
+type: role-binding
+name: ws-cluster1-workspace1-admin-ee
+subjects:
+  - type: user
+    name: alice@example.com
+permissions:
+  - resourceType: workspace
+    resourceFqn: cluster1:workspace1
+    role: workspace-admin
